@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>หน้าโชว์หนังสือการ์ตูน</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="css/home.css">
+</head>
+<body>
+    <header class="header py-3">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-4">
+                    <h1><strong>NUI MANGA STORE</strong></h1>
+                </div>
+                <div class="col-md-4">
+                    <div class="d-flex search-bar">
+                        <input type="text" placeholder="ค้นหาหนังสือการ์ตูน" class="form-control me-2">
+                        <button class="btn btn-danger me-2"><i class="bi bi-search"></i></button>
+                    </div>
+                </div>
+                <div class="col-md-4 text-end mt-2">
+                    <a href="/cart" class="btn btn-outline-light"><i class="bi bi-cart-plus-fill my-1"></i> ตะกร้าสินค้า</a>
+                    <a href="/login" class="btn btn-outline-light my-1"><i class="bi bi-person-workspace"></i> เข้าสู่ระบบ</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ปุ่มกดตรงล่าง head -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/home"><strong>NUI MANGA STORE</strong></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Book">หนังสือการ์ตูน</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">ประวัติการซื้อ</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <section class="products container py-5">
+            <h2><strong>สินค้าออกใหม่</strong></h2>
+            <div class="row">
+                <!-- Loop over books array -->
+                <% books.forEach(function(book) { %>
+                    <div class="col-md-3 mb-4 mt-5">
+                        <div class="book-item">
+                            <img src="<%= book.image %>" alt="<%= book.title %>" class="img-fluid">
+                            <h3><%= book.title %></h3>
+                            <p><%= book.price %> บาท</p>
+                            <button class="add-to-cart-btn btn btn-primary" 
+                                    data-id="<%= book.id %>" 
+                                    data-title="<%= book.title %>" 
+                                    data-price="<%= book.price %>" 
+                                    data-image="<%= book.image %>">
+                                เพิ่มตะกร้า
+                            </button>
+                        </div>
+                    </div>
+                <% }); %>
+            </div>
+        </section>
+    </main>
+
+    <div class="container mt-5">
+        <h2 class="text-center mb-4 mt-5">รีวิวหนังสือ</h2>
+        
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card p-4">
+                    <h4 class="text-center mb-3">เพิ่มรีวิวของคุณ</h4>
+                    <div class="mb-3">
+                        <input type="text" id="username" class="form-control" placeholder="ชื่อของคุณ">
+                    </div>
+                    <div class="mb-3">
+                        <select id="rating" class="form-select">
+                            <option value="5">⭐⭐⭐⭐⭐ (5 ดาว)</option>
+                            <option value="4">⭐⭐⭐⭐ (4 ดาว)</option>
+                            <option value="3">⭐⭐⭐ (3 ดาว)</option>
+                            <option value="2">⭐⭐ (2 ดาว)</option>
+                            <option value="1">⭐ (1 ดาว)</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <textarea id="comment" class="form-control" rows="3" placeholder="เขียนรีวิวของคุณ..."></textarea>
+                    </div>
+                    <div class="text-center">
+                        <button class="btn btn-primary" onclick="addReview()">ส่งรีวิว</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <div class="row justify-content-center mt-5">
+            <div class="col-md-8">
+                <div class="card p-3">
+                    <h4 class="text-center mb-3 ms-5">รีวิวจากผู้ใช้</h4>
+                    <ul id="reviews-list" class="list-group"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+  
+        
+    <footer class="bg-dark text-white text-center py-3 mt-5">
+        <p>&copy; 2025 Nui&Dream.com | All Rights Reserved</p>
+        <p>
+            <a href="#" class="text-white me-2"><i class="bi bi-facebook"></i> Facebook</a>
+            <a href="#" class="text-white me-2"><i class="bi bi-twitter"></i> Twitter</a>
+            <a href="#" class="text-white"><i class="bi bi-instagram"></i> Instagram</a>
+        </p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="javascript/cart.js"></script>
+
+    <script>
+        let isAddingToCart = false;
+
+document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+    button.addEventListener('click', function(e) {
+        e.preventDefault();
+
+        const id = this.getAttribute('data-id');
+        const title = this.getAttribute('data-title');
+        const price = parseFloat(this.getAttribute('data-price'));
+        const image = this.getAttribute('data-image');
+        const quantity = 1;
+
+        fetch('/cart', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ id, title, price, quantity })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('สินค้าถูกเพิ่มลงในตะกร้าแล้ว!');
+            } else {
+                alert('เกิดข้อผิดพลาดในการเพิ่มสินค้า');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('เกิดข้อผิดพลาด');
+        });
+    });
+});
+
+
+
+const bookId = "1"; // ใส่ค่า bookId จริงๆ ตามหนังสือที่เปิดดู
+
+    function loadReviews() {
+        fetch(`/reviews/${bookId}`)
+            .then((res) => res.json())
+            .then((reviews) => {
+                const list = document.getElementById("reviews-list");
+                list.innerHTML = "";
+                reviews.forEach((review) => {
+                    list.innerHTML += `<li><strong>${review.user}</strong>: ${review.rating}⭐ - ${review.comment}</li>`;
+                });
+            });
+    }
+
+    function addReview() {
+        const user = document.getElementById("username").value;
+        const rating = document.getElementById("rating").value;
+        const comment = document.getElementById("comment").value;
+
+        fetch("/reviews", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ bookId, user, rating, comment }),
+        })
+        .then((res) => res.json())
+        .then(() => {
+            loadReviews();
+        });
+    }
+
+    loadReviews();
+    </script>
+</body>
+</html>

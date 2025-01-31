@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>รายละเอียดการชำระเงิน</title>
+    <link rel="stylesheet" href="css/checkout.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="header py-3">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-4">
+                    <h1><strong>NUI MANGA STORE</strong></h1>
+                </div>
+                <div class="col-md-4">
+                    <div class="d-flex search-bar">
+                        <input type="text" placeholder="ค้นหาหนังสือการ์ตูน" class="form-control me-2">
+                        <button class="btn btn-danger me-2"><i class="bi bi-search"></i></button>
+                    </div>
+                </div>
+                <div class="col-md-4 text-end mt-2">
+                    <a href="/cart" class="btn btn-outline-light"><i class="bi bi-cart-plus-fill my-1 "></i> ตะกร้าสินค้า</a>
+                    <a href="/login" class="btn btn-outline-light my-1"><i class="bi bi-person-workspace"></i> เข้าสู่ระบบ</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/home"><strong>NUI MANGA STORE</strong></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Book"> หนังสือการ์ตูน </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">ประวัติการซื้อ</a>
+                    </li>
+        
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <!-- รายการสินค้า -->
+            <div class="col-md-6">
+                <div class="cart-details">
+                    <h3>รายละเอียดตะกร้าสินค้า</h3>
+                    <div id="cart-details">
+                        <!-- รายการสินค้าจะแสดงที่นี่ -->
+                        <div class="book-item">
+                            <img src="https://via.placeholder.com/100" alt="Book Cover">
+                            <div>
+                                <h5>ชื่อหนังสือ 1</h5>
+                                <p>ราคา: ฿250</p>
+                                <p>จำนวน: 1</p>
+                            </div>
+                        </div>
+                        <div class="book-item">
+                            <img src="https://via.placeholder.com/100" alt="Book Cover">
+                            <div>
+                                <h5>ชื่อหนังสือ 2</h5>
+                                <p>ราคา: ฿300</p>
+                                <p>จำนวน: 2</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ฟอร์มการชำระเงิน -->
+            <div class="col-md-6">
+                <div class="form-container">
+                    <h4>กรอกข้อมูลการชำระเงิน</h4>
+                    <form id="payment-form">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">ชื่อ-นามสกุล</label>
+                            <input type="text" class="form-control" id="name" placeholder="กรอกชื่อของคุณ" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="address" class="form-label">ที่อยู่</label>
+                            <input type="text" class="form-control" id="address" placeholder="กรอกที่อยู่ของคุณ" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">เบอร์โทรศัพท์</label>
+                            <input type="text" class="form-control" id="phone" placeholder="กรอกเบอร์โทรศัพท์ของคุณ" required>
+                        </div>
+                        <div class="mb-4">
+                            <label for="payment-slip" class="form-label">แนบสลิปการโอนเงิน</label>
+                            <div class="d-flex align-items-center">
+                                <div class="qr-code">
+                                    <h5>สแกน QR Code</h5>
+                                    <img src="https://www.scb.co.th/getmedia/2f609c0d-4ec2-4682-a194-137f66371bad/qr-code-generated-7.jpg" alt="QR Code" />
+                                </div>
+                                <input type="file" class="form-control" id="payment-slip" required style="margin-left: 20px;">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">ยืนยันการชำระเงิน</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-3 mt-5">
+        <p>&copy; 2025 Nui&Dream.com | All Rights Reserved</p>
+        <p>
+            <a href="#" class="text-white me-2"><i class="bi bi-facebook"></i> Facebook</a>
+            <a href="#" class="text-white me-2"><i class="bi bi-twitter"></i> Twitter</a>
+            <a href="#" class="text-white"><i class="bi bi-instagram"></i> Instagram</a>
+        </p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="javascript/checkout.js"></script>
+</body>
+</html>

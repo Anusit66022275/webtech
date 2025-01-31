@@ -1,0 +1,147 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5dc;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;  /* ให้เต็มหน้าจอ */
+}
+
+/* ส่วนหัว */
+.header {
+    background-color: #343a40;
+    color: white;
+    padding: 15px 0;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 32px !important;
+}
+
+.navbar-brand {
+    font-size: 20px !important;
+    font-weight: bold !important;
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.search-bar input {
+    height: 40px;
+    flex-grow: 1;
+}
+
+.search-bar button {
+    height: 40px;
+    padding: 0 10px;
+    font-size: 16px;
+}
+
+.search-bar button:hover {
+    background-color: #c82333;
+}
+
+/* Navigation Bar */
+.navbar {
+    margin-bottom: 20px;
+}
+
+/* Navigation Bar */
+.navbar {
+    margin-bottom: 20px;
+}
+
+/* สไตล์สำหรับรูปหนังสือและปุ่ม */
+.book-item {
+    text-align: center;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.book-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.book-item img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.book-item h3 {
+    font-size: 18px;
+    margin: 10px 0;
+    color: #333;
+}
+
+.book-item p {
+    font-size: 16px;
+    color: #555;
+    margin: 10px 0;
+}
+
+.add-to-cart-btn {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.add-to-cart-btn:hover {
+    background-color: #0056b3;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 10px;
+    background-color: #333;
+    color: white;
+    margin-top: auto; /* ทำให้ footer อยู่ด้านล่างสุด */
+    font-size: 14px;
+}
+
+/* Responsive for small devices */
+@media (max-width: 768px) {
+    .search-bar {
+        flex-direction: column;
+    }
+
+    .search-bar button {
+        margin-left: 0;
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .search-bar {
+        flex-direction: column;
+    }
+
+    .search-bar button {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .card img {
+        height: 240px;
+        object-fit: cover;
+    }
+}

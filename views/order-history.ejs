@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ประวัติการซื้อ</title>
+</head>
+<body>
+    <h1>Your Orders</h1>
+    <table id="ordersTable">
+        <tr>
+            <th>Order ID</th>
+            <th>Books</th>
+            <th>Total Price</th>
+            <th>Status</th>
+            <th>Order Date</th>
+        </tr>
+    </table>
+
+    <script>
+        async function fetchOrders() {
+            const userId = 1; // Replace with actual user ID
+            const response = await fetch(`/user/orders?userId=${userId}`);
+            const data = await response.json();
+            const ordersTable = document.getElementById('ordersTable');
+
+            data.orders.forEach(order => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${order.order_id}</td>
+                    <td>${order.books}</td>
+                    <td>${order.total_price}</td>
+                    <td>${order.payment_status}</td>
+                    <td>${order.order_date}</td>
+                `;
+                ordersTable.appendChild(row);
+            });
+        }
+
+        fetchOrders();
+    </script>
+</body>
+</html>

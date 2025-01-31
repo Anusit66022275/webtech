@@ -1,0 +1,170 @@
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5dc;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;  /* ให้เต็มหน้าจอ */
+}
+
+/* ส่วนหัว */
+.header {
+    background-color: #343a40;
+    color: white;
+    padding: 15px 0;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 32px !important;
+}
+
+.navbar-brand {
+    font-size: 20px !important;
+    font-weight: bold !important;
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.search-bar input {
+    height: 40px;
+    flex-grow: 1;
+}
+
+.search-bar button {
+    height: 40px;
+    padding: 0 10px;
+    font-size: 16px;
+}
+
+.search-bar button:hover {
+    background-color: #c82333;
+}
+
+/* Navigation Bar */
+.navbar {
+    margin-bottom: 20px;
+}
+
+.carousel img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}
+
+
+.card img {
+    height: 250px;
+    object-fit: cover;
+}
+
+.search-bar {
+    display: flex;
+    align-items: center; 
+    gap: 5px;
+}
+
+.search-bar input {
+    height: 40px; 
+    flex-grow: 1; 
+}
+
+.search-bar button {
+    height: 40px; 
+    padding: 0 10px; 
+    font-size: 16px; 
+}
+
+.search-bar button:hover {
+    background-color: #c82333;
+}
+
+
+/* Navigation Bar */
+.navbar {
+    margin-bottom: 20px;
+}
+
+/* Carousel */
+.carousel img {
+    height: 400px;
+    object-fit: cover;
+}
+
+
+/* Cards */
+.card img {
+    height: 250px;
+    object-fit: cover;
+}
+
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 10px;
+    background-color: #333;
+    color: white;
+    margin-top: auto; /* ทำให้ footer อยู่ด้านล่างสุด */
+    font-size: 14px;
+}
+
+
+/* Utility classes */
+.text-center {
+    text-align: center;
+    margin-bottom: 20px;
+    margin-top: 40px;
+}
+
+.mt-5 {
+    margin-top: 3rem;
+}
+
+.me-2 {
+    margin-right: 0.5rem;
+}
+
+/* Responsive for small devices */
+@media (max-width: 768px) {
+    .search-bar {
+        flex-direction: column;
+    }
+
+    .search-bar button {
+        margin-left: 0;
+        width: 100%;
+    }
+
+}
+
+@media (max-width: 480px) {
+    .search-bar {
+        flex-direction: column;
+    }
+
+    .search-bar button {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .card img {
+        
+        height: 240px;
+        object-fit: cover;
+        
+}
+
+    
+    
+}
+
+
+

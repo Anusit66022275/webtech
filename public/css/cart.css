@@ -1,0 +1,174 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5dc;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;  /* ให้เต็มหน้าจอ */
+}
+
+/* ส่วนหัว */
+.header {
+    background-color: #343a40;
+    color: white;
+    padding: 15px 0;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 32px !important;
+}
+
+.navbar-brand {
+    font-size: 20px !important;
+    font-weight: bold !important;
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.search-bar input {
+    height: 40px;
+    flex-grow: 1;
+}
+
+.search-bar button {
+    height: 40px;
+    padding: 0 10px;
+    font-size: 16px;
+}
+
+.search-bar button:hover {
+    background-color: #c82333;
+}
+
+/* Navigation Bar */
+.navbar {
+    margin-bottom: 20px;
+}
+
+/* ตะกร้าสินค้า */
+.cart-items {
+    width: 100%;
+    max-width: 800px; /* ขนาดสูงสุดของ container */
+    margin: auto; /* จัดให้อยู่ตรงกลาง */
+    background-color: #f9f9f9; /* สีพื้นหลัง */
+    padding: 20px; /* พื้นที่ภายใน container */
+    border: 2px solid #007bff; /* เพิ่มกรอบรอบๆ ด้วยสีฟ้า */
+    border-radius: 12px; /* มุมโค้ง */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* เพิ่มเงา */
+}
+
+.cart-items h2 {
+    margin-bottom: 20px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+/* ตกแต่งรายการสินค้า */
+.cart-items ul {
+    list-style: none;
+    padding: 0;
+    font-size: 14px !important;
+}
+
+.cart-items li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    border: 1px solid #ddd; /* กรอบบางๆ รอบรายการสินค้า */
+    border-radius: 8px; /* มุมโค้ง */
+    margin-bottom: 10px;
+}
+
+.cart-items img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    margin-right: 20px;
+}
+
+.cart-items button {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 5px 12px;  /* ปรับขนาด padding ให้เหมาะสม */
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 5px;  /* เพิ่มระยะห่างระหว่างปุ่ม */
+    font-size: 14px;  /* ลดขนาดฟอนต์ */
+}
+
+.cart-items button:hover {
+    background-color: #e60000;
+}
+
+.cart-items li button {
+    width: 80px;  /* กำหนดความกว้างให้ปุ่มพอดี */
+    height: 30px;  /* กำหนดความสูงของปุ่ม */
+    margin: 0 5px;  /* กำหนดระยะห่างระหว่างปุ่ม */
+}
+
+#checkout {
+    display: block;
+    width: 30%;
+    background-color: #00509e;
+    color: white;
+    border: none;
+    padding: 10px;
+    margin-top: 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#checkout:hover {
+    background-color: #003d7a;
+}
+
+
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 10px;
+    background-color: #333;
+    color: white;
+    margin-top: auto; /* ทำให้ footer อยู่ด้านล่างสุด */
+    font-size: 14px;
+}
+
+/* Responsive for small devices */
+@media (max-width: 768px) {
+    .search-bar {
+        flex-direction: column;
+    }
+
+    .search-bar button {
+        margin-left: 0;
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .search-bar {
+        flex-direction: column;
+    }
+
+    .search-bar button {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .card img {
+        height: 240px;
+        object-fit: cover;
+    }
+}
