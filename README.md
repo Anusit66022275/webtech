@@ -8,8 +8,7 @@
 
 🛠️ วิธีติดตั้ง
 1️⃣ คัดลอก (Clone) โปรเจคจาก GitHub
-git clone https://github.com/yourusername/webtech.git
-cd webtech
+git clone https://github.com/Anusit66022275/webtech.git
 
 
 2️⃣ ติดตั้ง dependencies ที่จำเป็น
