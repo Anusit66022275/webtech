@@ -65,6 +65,7 @@ body {
 }
 
 .cart-items h2 {
+    font-size: 20px !important;
     margin-bottom: 20px;
     padding-top: 20px;
     padding-bottom: 20px;

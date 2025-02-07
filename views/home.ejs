@@ -1,64 +1,79 @@
+<!-- หน้าหลักโชว์เป็นหน้าแรก home.ejs -->
 <!DOCTYPE html>
-<html lang="en">
+<html lang="th">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NUI MANGA STORE</title>
-    <link rel="stylesheet" href="css/home1.css">
+    <link rel="stylesheet" href="/css/home1.css">
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 </head>
+
 <body>
 
-    <!-- ส่วนหัว -->
     <header class="header py-3">
         <div class="container">
-            <div class="row align-items-center ">
+            <div class="row align-items-center">
                 <div class="col-md-4">
                     <h1><strong>NUI MANGA STORE</strong></h1>
                 </div>
                 <div class="col-md-4">
                     <div class="d-flex search-bar">
-                        <input type="text" placeholder="ค้นหาหนังสือการ์ตูน" class="form-control me-2 ">
-                        <button class="btn btn-danger me-2"><i class="bi bi-search"></i></button>
+                        <input type="text" id="search-input" placeholder="ค้นหาหนังสือการ์ตูน" class="form-control me-2">
+                        <button class="btn btn-danger me-2" onclick="searchBooks()">
+                            <i class="bi bi-search"></i>
+                        </button>
                     </div>
                 </div>
                 <div class="col-md-4 text-end mt-2">
-                    <a href="/cart " class="btn btn-outline-light"><i class="bi bi-cart-plus-fill my-1"></i> ตะกร้าสินค้า</a>
-                    <a href="/login" class="btn btn-outline-light my-1"><i class="bi bi-person-workspace"></i> เข้าสู่ระบบ</a>
+                    <a href="/cart" class="btn btn-outline-light"><i class="bi bi-cart-plus-fill my-1"></i> ตะกร้าสินค้า</a>
+                    <% if (user) { %>
+                        <a href="/logout" class="btn btn-outline-light my-1"><i class="bi bi-box-arrow-right"></i> ออกจากระบบ</a>
+                    <% } else { %>
+                        <a href="/login" class="btn btn-outline-light my-1"><i class="bi bi-person-workspace"></i> เข้าสู่ระบบ</a>
+                    <% } %>
                 </div>
             </div>
         </div>
     </header>
-
-    <!-- ปุ่มกดตรงล่างhead -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark ">
+    
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
             <a class="navbar-brand" href="/home"><strong>NUI MANGA STORE</strong></a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/Book"> หนังสือการ์ตูน </a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            หมวดหมู่หนังสือการ์ตูน
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="/Book?category=แอคชั่น">แอคชั่น</a></li>
+                            <li><a class="dropdown-item" href="/Book?category=โรแมนซ์">โรแมนซ์</a></li>
+                            <li><a class="dropdown-item" href="/Book?category=กีฬา">กีฬา</a></li>
+                        </ul>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">ประวัติการซื้อ</a>
+                        <a class="nav-link" href="/order-history">ประวัติการซื้อ</a>
                     </li>
-                   
                 </ul>
             </div>
         </div>
     </nav>
 
-   <!-- ตรงส่วนภาพสไลด์ตรงกลาง -->
-    <div id="carouselExample" class="carousel slide mt-4 mx-5 " data-bs-ride="carousel">
+
+    <!-- ตรงส่วนภาพสไลด์ตรงกลาง -->
+    <div id="carouselExample" class="carousel slide mt-4 mx-5" data-bs-ride="carousel">
         <div class="carousel-inner">
-            <div class="carousel-item active ">
+            <div class="carousel-item active">
                 <img src="/css/slide1.jpg" class="d-block w-100  rounded" alt="Promotion 1">
             </div>
             <div class="carousel-item">
@@ -78,45 +93,45 @@
         </button>
     </div>
 
-    <!-- แสดงรายการโปรโมชั่น -->
-    <div class="container mt-5 ">
-        <h2 class="text-center">โปรโมชั่นพิเศษ</h2>
-        <div class="row">
-            <div class="col-md-4">
-                <div class="card">
-                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTol6Q2VulArRZOvoWP7lV9pJ5bRLd4Qm_kvw&s" class="card-img-top" alt="Promotion 1">
-                    <div class="card-body">
-                        <h5 class="card-title">Blue Lock <br>ขังดวลแข้ง</h5>
-                        <p class="card-text">ราคา: 300 บาท</p>
-                        <a href="/Book" class="btn btn-dark">ดูเพิ่มเติม</a>
+        <!-- แสดงรายการหนังสือ -->
+<div class="container mt-5 pt-4 mb-5">
+    <h2 class="text-center pt-4 pb-3 fw-bold">โปรโมชั่นหนังสือการ์ตูน</h2>
+    <div class="row g-4">
+        <% books.forEach(book => { %>
+        <div class="col-md-3">
+            <div class="card h-100">
+                <img src="<%= book.image %>" class="card-img-top" alt="<%= book.title %>">
+                <div class="card-body d-flex flex-column justify-content-between">
+                    <h5 class="card-title"><%= book.title %></h5>
+                    <p class="card-text">ราคา: ฿<%= book.price %></p>
+                    <div class="mt-auto text-center">
+                        <a href="/book-details/<%= book.id %>" class="btn  btn-warning">ดูเพิ่มเติม</a>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="card">
-                    <img src="https://upload.wikimedia.org/wikipedia/th/3/32/Attack_on_Titan%2C_volume_1_thai_version.jpg" class="card-img-top" alt="Promotion 2">
-                    <div class="card-body">
-                        <h5 class="card-title">Attack on Titan <br>ผ่าพิภพไททัน</h5>
-                        <p class="card-text">ราคา: 250 บาท</p>
-                        <a href="/Book" class="btn btn-dark">ดูเพิ่มเติม</a>
-                    </div>
+        </div>
+        <% }) %>
+    </div>
+</div>
+
+
+    <!-- Modal แสดงผลการค้นหา -->
+    <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="searchModalLabel">ผลการค้นหา</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card">
-                    <img src="https://cdn-local.mebmarket.com/meb/server1/220365/Thumbnail/book_detail_large.gif?2" class="card-img-top" alt="Promotion 2">
-                    <div class="card-body">
-                        <h5 class="card-title">SAKAMOTO DAYS <br>ซากาโมโตะ เดย์</h5>
-                        <p class="card-text">ราคา: 250 บาท</p>
-                        <a href="/Book" class="btn btn-dark">ดูเพิ่มเติม</a>
-                    </div>
+                <div class="modal-body">
+                    <div class="row" id="search-results-container"></div>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Footer -->
-    <footer class="bg-dark text-white text-center py-3 mt-5">
+    <footer class="bg-dark text-white text-center py-4 mt-5">
         <p>&copy; 2025 Nui&Dream.com | All Rights Reserved</p>
         <p>
             <a href="#" class="text-white me-2"><i class="bi bi-facebook"></i> Facebook</a>
@@ -125,9 +140,9 @@
         </p>
     </footer>
 
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/javascript/home1.js"></script>
-
+    <script src="/javascript/search.js"></script>
 </body>
+
 </html>

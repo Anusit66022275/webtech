@@ -1,7 +1,10 @@
 body {
-    padding: 0;
     font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
     background-color: #f5f5dc;
+    box-sizing: border-box;
+    
 }
 
 /* ส่วนหัว */
@@ -16,30 +19,35 @@ body {
     font-size: 32px !important;
 }
 
+.navbar-brand {
+    font-size: 20px !important;
+    font-weight: bold !important;
+}
+
 .search-bar {
     display: flex;
-    align-items: center; 
+    align-items: center;
     gap: 5px;
 }
 
 .search-bar input {
-    height: 40px; 
-    flex-grow: 1; 
+    height: 40px;
+    flex-grow: 1;
 }
 
 .search-bar button {
-    height: 40px; 
-    padding: 0 10px; 
-    font-size: 16px; 
+    height: 40px;
+    padding: 0 10px;
+    font-size: 16px;
 }
 
 .search-bar button:hover {
     background-color: #c82333;
 }
 
-.navbar-brand {
-    font-size: 20px !important;
-    font-weight: bold !important;
+/* Navigation Bar */
+.navbar {
+    margin-bottom: 20px;
 }
 
 /* ส่วนของคอนเทนเนอร์ */
@@ -159,39 +167,37 @@ body {
     color: #333;
 }
 
-.qr-code img {
-    max-width: 150px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+
+/* ✅ ขยับ QR Code และข้อความมาทางซ้าย */
+.qr-code {
+    display: block;
+    max-width: 200px;
+    margin-left: 0; /* ขยับไปชิดซ้าย */
 }
+
+img {
+    text-align: left;
+    width: 50%;
+}
+
 
 footer {
     text-align: center;
     padding: 10px;
     background-color: #333;
     color: white;
-    margin: 10px;
     font-size: 14px;
 }
 
 
-
-/* Responsive for small devices */
+/* Responsive */
 @media (max-width: 768px) {
-    .row {
-        flex-direction: column;
-    }
-
-    .cart-details, .form-container {
-        margin-bottom: 30px;
-    }
-
     .search-bar {
         flex-direction: column;
     }
 
     .search-bar button {
-        margin-left: 0;
         width: 100%;
     }
 }

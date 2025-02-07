@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เพิ่มหนังสือ</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #74ebd5, #acb6e5);
+            font-family: 'Arial', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .form-container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease-in-out;
+        }
+        .form-container:hover {
+            transform: translateY(-5px);
+        }
+        .form-label {
+            font-weight: bold;
+        }
+        .btn-primary {
+            width: 100%;
+            padding: 10px;
+            font-size: 18px;
+            transition: background 0.3s;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #2980b9, #6ab0de);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="form-container">
+        <h2 class="text-center text-primary">📖 เพิ่มหนังสือ</h2>
+        <form action="/admin/add" method="POST">
+            <div class="mb-3">
+                <label class="form-label">ชื่อหนังสือ</label>
+                <input type="text" class="form-control" name="title" placeholder="ชื่อหนังสือ" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">หมวดหมู่</label>
+                <input type="text" class="form-control" name="genre" placeholder="หมวดหมู่" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">ราคา</label>
+                <input type="number" class="form-control" name="price" placeholder="ราคา" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">สต๊อคสินค้า</label>
+                <input type="number" class="form-control" name="stock" placeholder="สต๊อคสินค้า" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">URL รูปภาพ</label>
+                <input type="text" class="form-control" name="image" placeholder="ลิงก์รูปภาพ">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">คำอธิบาย</label>
+                <textarea class="form-control" name="description" placeholder="คำอธิบาย" rows="3"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">➕ เพิ่มหนังสือ</button>
+        </form>
+    </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

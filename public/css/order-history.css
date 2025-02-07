@@ -1,0 +1,187 @@
+/* สไตล์หลัก */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5dc;
+    box-sizing: border-box;
+}
+
+/* ส่วนหัว */
+.header {
+    background-color: #343a40;
+    color: white;
+    padding: 15px 0;
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 32px !important;
+    font-weight: bold;
+}
+
+.navbar-brand {
+    font-size: 20px !important;
+    font-weight: bold !important;
+}
+
+/* การ์ดหนังสือ */
+.card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    min-height: 450px; /* ปรับความสูงให้เท่ากัน */
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    background-color: white;
+}
+
+.card img {
+    width: 100%;  /* ปรับให้รูปภาพเต็มพื้นที่ */
+    max-width: 250px; /* จำกัดขนาดภาพ */
+    height: 350px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.card-title {
+    text-align: center;
+    max-width: 100%;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* จำกัดให้แสดง 2 บรรทัด */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+.card-text {
+    text-align: center;
+    font-size: 1rem;
+    margin-bottom: 10px;
+}
+
+/* ปุ่มให้อยู่ตรงกลาง */
+.card-body .btn {
+    width: 100%;
+    max-width: 150px;
+    text-align: center;
+    margin-top: auto;
+}
+
+/* ปุ่มสีฟ้าอ่อน */
+.btn-info {
+    background-color: #87CEEB;
+    color: white;
+    border: none;
+    font-weight: bold;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.btn-info:hover {
+    background-color: #5DADE2;
+}
+
+/* ตารางประวัติการสั่งซื้อ */
+table {
+    background-color: #E3F2FD; /* สีฟ้าอ่อน */
+    border-radius: 5px;
+    padding: 10px;
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+
+
+tbody tr {
+    background-color: #E3F2FD; /* สีฟ้าอ่อน */
+    border-bottom: 1px solid #90CAF9; /* เส้นขอบสีฟ้า */
+}
+
+
+
+
+
+/* ปรับช่องสินค้าให้ขยายใหญ่ขึ้น แต่ไม่ให้ข้อความทะลุ */
+td:nth-child(9) {
+    text-align: left;
+    vertical-align: top;
+    width: 60%; /* เพิ่มพื้นที่ให้ช่องสินค้า */
+    max-width: 600px; /* ป้องกันไม่ให้กว้างเกินไป */
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal; /* ป้องกันการทะลุ */
+}
+
+td:nth-child(9) ul {
+    padding-left: 0;
+    list-style: none;
+    margin: 0;
+}
+
+td:nth-child(9) li {
+    display: block;
+    font-size: 1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+
+
+    .search-bar {
+        flex-direction: column;
+    }
+
+    .search-bar button {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .card img {
+        height: 240px;
+    }
+    .card {
+        min-height: 400px;
+    }
+    table {
+        font-size: 0.9rem;
+    }
+    th:nth-child(1), td:nth-child(1), th:nth-child(2), td:nth-child(2) {
+        display: table-cell; /* แสดงไอดีและวันที่ */
+    }
+    td:nth-child(9) {
+        width: 100%; /* ให้สินค้าแสดงเต็มบรรทัด */
+        max-width: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .card img {
+        height: 200px;
+    }
+    .card {
+        min-height: 350px;
+    }
+    th, td {
+        font-size: 0.85rem;
+        padding: 6px;
+    }
+    table {
+        font-size: 0.8rem;
+    }
+    td:nth-child(9) {
+        width: 100%;
+    }
+}

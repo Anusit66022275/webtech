@@ -1,0 +1,125 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #FFFFFF;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;  /* ให้เต็มหน้าจอ */
+}
+
+/* ส่วนหัว */
+.header {
+    background-color: #343a40;
+    color: white;
+    padding: 15px 0;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 32px !important;
+}
+
+.navbar-brand {
+    font-size: 20px !important;
+    font-weight: bold !important;
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.search-bar input {
+    height: 40px;
+    flex-grow: 1;
+}
+
+.search-bar button {
+    height: 40px;
+    padding: 0 10px;
+    font-size: 16px;
+}
+
+.search-bar button:hover {
+    background-color: #c82333;
+}
+
+/* Navigation Bar */
+.navbar {
+    margin-bottom: 20px;
+}
+
+img {
+    width: 350px; /* หรือขนาดที่ต้องการ */
+    height: auto; /* ป้องกันการบิดเบี้ยว */
+    object-fit: cover;
+}
+
+
+
+/* กรอบของกล่องรีวิว */
+.card {
+    border: 1px solid #000000; /* เปลี่ยนเป็นสีดำเข้ม */
+    border-radius: 10px; /* ให้มุมโค้งเล็กน้อย */
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2); /* เพิ่มเงาให้ดูนูนขึ้น */
+    background-color: #ffffff; /* พื้นหลังสีขาว */
+    padding: 20px;
+}
+
+/* กรอบของรายการรีวิว */
+.list-group-item {
+    border: 1px solid #555555; /* ขอบสีเทาเข้มขึ้น */
+    border-radius: 8px;
+    padding: 15px;
+    background-color: #f0f0f0; /* สีพื้นหลังเทาอ่อน */
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* ปุ่มส่งรีวิว */
+.btn-primary {
+    background-color: #0044cc; /* สีน้ำเงินเข้ม */
+    border: 1px solid #002288; /* ขอบเข้มขึ้น */
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.btn-primary:hover {
+    background-color: #002288; /* ทำให้เข้มขึ้นเมื่อ hover */
+    border: 1px solid #001166;
+}
+
+
+
+/* Responsive for small devices */
+@media (max-width: 768px) {
+    .search-bar {
+        flex-direction: column;
+    }
+
+    .search-bar button {
+        margin-left: 0;
+        width: 100%;
+    }
+}
+
+
+@media (max-width: 480px) {
+    .search-bar {
+        flex-direction: column;
+    }
+
+    .search-bar button {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .card img {
+        height: 240px;
+        object-fit: cover;
+    }
+}

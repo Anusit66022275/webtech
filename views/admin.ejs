@@ -1,15 +1,16 @@
-<!-- หน้าแบ่งรายละเอียดหนังสือตามหมวดหมู่ที่เลือก Book.ejs -->
+<!-- หน้าระบบจัดการแก้ไข ลบ เพิ่ม admin.ejs -->
 <!DOCTYPE html>
-<html lang="th">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>หน้าโชว์หนังสือการ์ตูน</title>
+    <title>หน้าแอดมิน</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="css/home.css">
+    <link rel="stylesheet" href="/css/admin.css">
 </head>
 <body>
+
     <header class="header py-3">
         <div class="container">
             <div class="row align-items-center">
@@ -63,31 +64,39 @@
         </div>
     </nav>
 
-    <main>
-        <section class="products container py-5">
-            <h2 class="text-center"><strong>สินค้าออกใหม่</strong></h2>
-            <div class="row" id="search-results">
-                <% books.forEach(function(book) { %>
-                    <div class="col-md-3 mb-4">
-                        <div class="book-item d-flex flex-column">
-                            <% if (book.image.startsWith("http")) { %>
-                                <img src="<%= book.image %>" alt="<%= book.title %>" class="book-img">
-                            <% } else { %>
-                                <img src="/uploads/<%= book.image %>" alt="<%= book.title %>" class="book-img">
-                            <% } %>
-                            <h3 class="book-title"><%= book.title %></h3>
-                            <p class="book-price"><%= book.price %> บาท</p>
-                            <div class="mt-auto text-center">
-                                <a href="/book-details/<%= book.id %>" class="btn btn-warning btn-details">ดูรายละเอียด</a>
-                            </div>
-                        </div>
-                    </div>
-                <% }); %>
-            </div>
-        </section>
-    </main>
-    
 
+    <div class="container mt-4 mb-5">
+        <h2 class="text-center">จัดการหนังสือ</h2>
+        <a href="/admin/add" class="btn btn-success mb-3">➕ เพิ่มหนังสือ</a>
+    
+        <table class="table table-bordered mx-auto text-center">
+            <thead class="table-dark">
+                <tr>
+                    <th>ชื่อหนังสือ</th>
+                    <th>หมวดหมู่</th>
+                    <th>สต๊อค</th>
+                    <th>ราคา</th>
+                    <th>จัดการ</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% books.forEach(book => { %>
+                <tr>
+                    <td><%= book.title %></td>
+                    <td><%= book.genre %></td>
+                    <td><%= book.stock %></td>
+                    <td>฿<%= book.price %></td>
+                    <td>
+                        <a href="/admin/edit/<%= book.id %>" class="btn btn-warning btn-sm">✏ แก้ไข</a>
+                        <form action="/admin/delete/<%= book.id %>" method="POST" style="display:inline;">
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('ลบหนังสือนี้?');">🗑 ลบ</button>
+                        </form>
+                    </td>
+                </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    </div>
 
     <!-- Modal แสดงผลการค้นหา -->
     <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
@@ -104,17 +113,8 @@
         </div>
     </div>
     
-    <footer class="bg-dark text-white text-center py-3 mt-5">
-        <p>&copy; 2025 Nui&Dream.com | All Rights Reserved</p>
-        <p>
-            <a href="#" class="text-white me-2"><i class="bi bi-facebook"></i> Facebook</a>
-            <a href="#" class="text-white me-2"><i class="bi bi-twitter"></i> Twitter</a>
-            <a href="#" class="text-white"><i class="bi bi-instagram"></i> Instagram</a>
-        </p>
-    </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/javascript/cart.js"></script>
-    <script src="/javascript/search.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/javascript/search.js"></script>
 </body>
 </html>

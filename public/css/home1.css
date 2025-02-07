@@ -1,13 +1,10 @@
-
+/* สไตล์หลัก */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
     background-color: #f5f5dc;
     box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;  /* ให้เต็มหน้าจอ */
 }
 
 /* ส่วนหัว */
@@ -20,6 +17,7 @@ body {
 .header h1 {
     margin: 0;
     font-size: 32px !important;
+    font-weight: bold;
 }
 
 .navbar-brand {
@@ -27,43 +25,54 @@ body {
     font-weight: bold !important;
 }
 
-.search-bar {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.search-bar input {
-    height: 40px;
-    flex-grow: 1;
-}
-
-.search-bar button {
-    height: 40px;
-    padding: 0 10px;
-    font-size: 16px;
-}
-
-.search-bar button:hover {
-    background-color: #c82333;
-}
-
-/* Navigation Bar */
-.navbar {
-    margin-bottom: 20px;
-}
-
 .carousel img {
     height: 100%;
-    width: 100%;
+    width: 80%;
     object-fit: cover;
 }
 
+/* หมวดหมู่สินค้า */
+.navbar-nav .nav-link {
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px 15px;
+}
 
+.navbar-nav .nav-item .btn {
+    display: flex;
+    align-items: center;
+    padding: 8px 15px;
+}
+
+.navbar-nav .nav-item .btn img {
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
+}
+
+/* Cards */
 .card img {
-    height: 250px;
+    width: 70%;
+    height: 350px;
     object-fit: cover;
+    
 }
+
+.card-img-top {
+    width: 80%;         /* ลดขนาดของรูปภาพให้เล็กลง */
+    height: auto;       /* ให้สูงอัตโนมัติ */
+    display: block;     /* ทำให้รูปแสดงเป็นบล็อก */
+    margin: 0 auto;     /* จัดให้รูปอยู่ตรงกลาง */
+}
+
+.card {
+    border: none !important; /* เอาขอบออก */
+    display: flex;
+    flex-direction: column; /* วางเนื้อหาภายในคาร์ดเป็นแนวตั้ง */
+    justify-content: center; /* จัดเนื้อหาให้อยู่กลางคาร์ด */
+    align-items: center;     /* จัดรูปภาพให้อยู่กลางคาร์ด */
+}
+
 
 .search-bar {
     display: flex;
@@ -86,10 +95,16 @@ body {
     background-color: #c82333;
 }
 
-
 /* Navigation Bar */
 .navbar {
     margin-bottom: 20px;
+}
+
+/* Navbar brand image (logo) */
+.navbar-brand img {
+    border-radius: 50%;  /* ทำให้เป็นวงกลม */
+    border: 2px solid #fff;  /* ขอบสีขาว */
+    padding: 5px;  /* เพิ่มระยะห่างรอบๆ รูป */
 }
 
 /* Carousel */
@@ -98,21 +113,11 @@ body {
     object-fit: cover;
 }
 
-
-/* Cards */
-.card img {
-    height: 250px;
-    object-fit: cover;
-}
-
-
-/* Footer */
 footer {
     text-align: center;
     padding: 10px;
     background-color: #333;
     color: white;
-    margin-top: auto; /* ทำให้ footer อยู่ด้านล่างสุด */
     font-size: 14px;
 }
 
@@ -132,6 +137,74 @@ footer {
     margin-right: 0.5rem;
 }
 
+.card-img-top {
+    width: 100%;  /* ปรับให้เต็มขนาด */
+    max-width: 300px; /* หรือ 300px ถ้าต้องการใหญ่ขึ้น */
+    height: 350px; /* ปรับขนาดความสูง */
+    object-fit: cover; /* ทำให้รูปเต็มพื้นที่ */
+}
+
+/* ปรับขนาดให้การ์ดทุกใบมีขนาดเท่ากัน */
+.card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 420px; /* ทำให้ทุกการ์ดมีความสูงเท่ากัน */
+}
+
+/* ทำให้ card-body กระจายเนื้อหา และปุ่มอยู่ล่างสุด */
+.card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+    padding: 15px;
+}
+
+/* ป้องกันชื่อหนังสือยาวเกินไป */
+.card-title {
+    text-align: center;
+    max-width: 100%;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* จำกัดให้แสดง 2 บรรทัด */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-height: 3rem; /* ให้ขนาดของชื่อหนังสือมีขนาดเท่ากัน */
+}
+
+/* ป้องกันราคายืดเกินไป */
+.card-text {
+    text-align: center;
+    font-size: 1rem;
+    min-height: 2rem;
+}
+
+/* ปุ่มอยู่ด้านล่างสุดของการ์ด */
+.card-body .btn {
+    width: 100%;
+    max-width: 150px;
+    text-align: center;
+}
+
+.card-text {
+    text-align: center;
+    font-size: 1rem;
+    margin-bottom: 2px; /* ลดระยะห่างจากข้อความด้านบน */
+}
+
+footer {
+    background-color: #222;
+    color: white;
+    text-align: center;
+    padding: 15px 0;
+    width: 100%;
+}
+
+
+
 /* Responsive for small devices */
 @media (max-width: 768px) {
     .search-bar {
@@ -143,27 +216,27 @@ footer {
         width: 100%;
     }
 
-}
-
-@media (max-width: 480px) {
-    .search-bar {
-        flex-direction: column;
+    .navbar-nav .nav-link {
+        font-size: 14px;
     }
 
-    .search-bar button {
-        margin-left: 0;
-        width: 100%;
+    .carousel img {
+        height: 250px;
+        object-fit: cover;
     }
 
     .card img {
-        
         height: 240px;
         object-fit: cover;
-        
-}
+    }
 
-    
-    
+    .card-text {
+        text-align: center;
+        font-size: 1rem;
+        margin-bottom: 1px; /* ลดระยะห่างจากข้อความด้านบน */
+    }
+
+
 }
 
 

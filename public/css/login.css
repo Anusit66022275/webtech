@@ -3,33 +3,52 @@ body {
     margin: 0;
     padding: 0;
     background-color: #f5f5dc;
-    box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    min-height: 100vh;  /* ให้เต็มหน้าจอ */
+    align-items: center;
+    min-height: 100vh;
 }
 
-/* ส่วนหัว */
+
 .header {
     background-color: #343a40;
     color: white;
+    width: 100%;  /* ขยายเต็มความกว้าง */
     padding: 15px 0;
+    display: flex;
+    justify-content: center;  /* จัดกึ่งกลางในแนวนอน */
+    align-items: center;  /* จัดกึ่งกลางในแนวตั้ง */
+    position: relative; /* เพื่อให้สามารถควบคุมตำแหน่งได้ */
 }
 
 .header h1 {
     margin: 0;
     font-size: 32px !important;
+
 }
 
-.navbar-brand {
-    font-size: 20px !important;
-    font-weight: bold !important;
+.navbar a {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+    padding: 8px 15px
+    }
+
+.navbar {
+    width: 100%;  /* ให้ navbar ขยายเต็มความกว้าง */
+    background-color: #495057;  /* สามารถปรับสีให้ตรงกับความต้องการ */
+    padding: 10px 0;
+    display: flex;
+    justify-content: space-around; /* จัดเมนูให้อยู่ห่างกัน */
+    align-items: center;
 }
+
+
 
 .search-bar {
     display: flex;
     align-items: center;
-    gap: 7px;
+    gap: 10px;
 }
 
 .search-bar input {
@@ -52,57 +71,41 @@ body {
     margin-bottom: 20px;
 }
 
-.navbar-nav {
+
+/* Main Content */
+.main-content {
     display: flex;
-    justify-content: flex-start;
-    width: 100%;
-}
-
-.navbar-nav .nav-item {
-    font-size: 16px;
-    font-weight: bold;
-}
-
-.navbar-nav .nav-link {
-    color: white;
-    padding: 10px;
-}
-
-.navbar-nav .nav-link:hover {
-    background-color: #00509e;
-    color: white;
-}
-/* ส่วนของฟอร์มล็อกอิน */
-.login-container {
-    display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    flex-grow: 1;  /* ให้ส่วนนี้ขยายจนเต็มพื้นที่ที่เหลือ */
+    flex-grow: 1;
+    width: 100%;
+    height: 100vh; /* ✅ ให้เต็มจอ */
+    padding-top: 60px; /* ✅ กันชิดบน */
+    padding-bottom: 50px; /* ✅ กันชิดล่าง */
 }
 
+/* Login Box */
 .login-form {
     background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
     width: 100%;
     max-width: 400px;
 }
 
-.login-form h2 {
-    margin-bottom: 20px;
-    font-size: 24px;
-    text-align: center;
-}
-
+/* Input Fields */
 .input-group {
     margin-bottom: 15px;
+    text-align: left;
 }
 
 .input-group label {
     font-weight: bold;
-    margin-bottom: 5px;
     display: block;
+    margin-bottom: 5px;
 }
 
 .input-group input {
@@ -110,24 +113,26 @@ body {
     padding: 10px;
     font-size: 16px;
     border: 1px solid #ddd;
-    border-radius: 4px;
+    border-radius: 5px;
 }
 
+/* Login Button */
 .login-btn {
     width: 100%;
-    padding: 10px;
-    background-color: #343a40;
+    padding: 12px;
+    background: linear-gradient(to right, #0072ff, #00c6ff);
     color: white;
-    font-size: 16px;
+    font-size: 18px;
     border: none;
-    border-radius: 4px;
+    border-radius: 5px;
     cursor: pointer;
 }
 
 .login-btn:hover {
-    background-color: #c82333;
+    background: linear-gradient(to right, #00c6ff, #0072ff);
 }
 
+/* Register Link */
 .register-link {
     text-align: center;
     margin-top: 10px;
@@ -142,50 +147,25 @@ body {
     text-decoration: underline;
 }
 
-
-/* Footer */
 footer {
-    text-align: center;
-    padding: 10px;
-    background-color: #333;
+    width: 100%;  /* ขยายให้เต็มความกว้าง */
+    background-color: #222;
     color: white;
-    margin-top: auto; /* ทำให้ footer อยู่ด้านล่างสุด */
-    font-size: 14px;
+    text-align: center;
+    padding: 15px 0;
+    position: relative;  /* หรือใช้ absolute หรือ fixed ตามความต้องการ */
+    bottom: 0;
 }
 
-/* Responsive for small devices */
+
+
+/* Responsive */
 @media (max-width: 768px) {
     .search-bar {
         flex-direction: column;
     }
 
     .search-bar button {
-        margin-left: 0;
         width: 100%;
     }
-
 }
-
-@media (max-width: 480px) {
-    .search-bar {
-        flex-direction: column;
-    }
-
-    .search-bar button {
-        margin-left: 0;
-        width: 100%;
-    }
-
-    .card img {
-        
-        height: 240px;
-        object-fit: cover;
-        
-}
-
-    
-    
-}
-
-
-
