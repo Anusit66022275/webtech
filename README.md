@@ -50,6 +50,9 @@ mysql -u root manga_shop < manga_shop.sql
 6️⃣ รันโปรเจค
 npm run dev
 
+นำอันนี้ไปวางบน Chrome
+http://localhost:3000/home
+
 
 
 //ผู้พัฒนา//
