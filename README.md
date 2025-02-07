@@ -52,7 +52,9 @@ npm run dev
 นำอันนี้ไปวางบน Chrome
 http://localhost:3000/home
 
-
+ถ้าจะเข้าสู่ระบบในสถานะผู้ดูแล
+admin@example.com
+admin123
 
 //ผู้พัฒนา//
 นาย นัทธพงศ์ อุปถัมภ์ 66021735
