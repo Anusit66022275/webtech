@@ -70,11 +70,10 @@ async function addToCart(bookId, title, price, image) {
 
         const data = await response.json();
         if (data.success) {
-            console.log("✅ สินค้าถูกเพิ่มลงในตะกร้าแล้ว!");
-            alert("สินค้าถูกเพิ่มลงในตะกร้าแล้ว!");
-            loadCart(); // โหลดตะกร้าใหม่
+            showToast("เพิ่มสินค้าลงตะกร้าแล้ว!", "success");
+            loadCart();
         } else {
-            alert("เกิดข้อผิดพลาด: " + data.error);
+            showToast("เกิดข้อผิดพลาด: " + data.error, "error");
         }
     } catch (error) {
         console.error("❌ Error adding to cart:", error);
@@ -94,10 +93,9 @@ async function updateCart(index, action) {
 
         const data = await response.json();
         if (data.success) {
-            console.log("✅ อัปเดตสินค้าเรียบร้อย!");
             loadCart();
         } else {
-            alert("เกิดข้อผิดพลาด: " + data.message);
+            showToast("เกิดข้อผิดพลาด: " + data.message, "error");
         }
     } catch (error) {
         console.error("❌ Error updating cart:", error);
@@ -117,10 +115,10 @@ async function removeFromCart(index) {
 
         const data = await response.json();
         if (data.success) {
-            console.log("✅ ลบสินค้าเรียบร้อย!");
+            showToast("ลบสินค้าออกจากตะกร้าแล้ว", "info");
             loadCart();
         } else {
-            alert("เกิดข้อผิดพลาด: " + data.message);
+            showToast("เกิดข้อผิดพลาด: " + data.message, "error");
         }
     } catch (error) {
         console.error("❌ Error removing item from cart:", error);

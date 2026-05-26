@@ -1,171 +1,95 @@
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f5f5dc;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
+/* หน้า Login */
+.auth-wrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 16px;
 }
 
-
-.header {
-    background-color: #343a40;
-    color: white;
-    width: 100%;  /* ขยายเต็มความกว้าง */
-    padding: 15px 0;
-    display: flex;
-    justify-content: center;  /* จัดกึ่งกลางในแนวนอน */
-    align-items: center;  /* จัดกึ่งกลางในแนวตั้ง */
-    position: relative; /* เพื่อให้สามารถควบคุมตำแหน่งได้ */
+.auth-card {
+  background: var(--white);
+  border-radius: 16px;
+  box-shadow: var(--shadow-lg);
+  padding: 40px 36px;
+  width: 100%;
+  max-width: 420px;
 }
 
-.header h1 {
-    margin: 0;
-    font-size: 32px !important;
-
+.auth-card .auth-logo {
+  font-size: 28px;
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 4px;
+  color: var(--dark);
 }
 
-.navbar a {
-    color: white;
-    text-decoration: none;
-    font-size: 16px;
-    padding: 8px 15px
-    }
+.auth-card .auth-logo span { color: var(--yellow); }
 
-.navbar {
-    width: 100%;  /* ให้ navbar ขยายเต็มความกว้าง */
-    background-color: #495057;  /* สามารถปรับสีให้ตรงกับความต้องการ */
-    padding: 10px 0;
-    display: flex;
-    justify-content: space-around; /* จัดเมนูให้อยู่ห่างกัน */
-    align-items: center;
+.auth-card .auth-subtitle {
+  text-align: center;
+  color: var(--muted);
+  font-size: 14px;
+  margin-bottom: 28px;
 }
 
-
-
-.search-bar {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+.auth-card h2 {
+  font-size: 22px;
+  font-weight: 800;
+  margin-bottom: 20px;
+  color: var(--dark);
+  text-align: center;
 }
 
-.search-bar input {
-    height: 40px;
-    flex-grow: 1;
+.auth-card .form-label {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--dark);
+  margin-bottom: 5px;
 }
 
-.search-bar button {
-    height: 40px;
-    padding: 0 10px;
-    font-size: 16px;
+.auth-card .form-control {
+  border-radius: 8px;
+  height: 44px;
+  border: 1.5px solid var(--border);
+  font-family: 'Sarabun', Arial, sans-serif;
+  font-size: 15px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.auth-card .form-control:focus {
+  border-color: var(--yellow);
+  box-shadow: 0 0 0 3px rgba(255,193,7,0.15);
 }
 
-.search-bar button:hover {
-    background-color: #c82333;
+.btn-auth {
+  width: 100%;
+  padding: 12px;
+  background: var(--yellow);
+  color: var(--dark);
+  font-weight: 800;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-top: 4px;
+  font-family: 'Sarabun', Arial, sans-serif;
 }
+.btn-auth:hover { background: var(--yellow-dark); }
 
-/* Navigation Bar */
-.navbar {
-    margin-bottom: 20px;
+.auth-link {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 14px;
+  color: var(--muted);
 }
-
-
-/* Main Content */
-.main-content {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    flex-grow: 1;
-    width: 100%;
-    height: 100vh; /* ✅ ให้เต็มจอ */
-    padding-top: 60px; /* ✅ กันชิดบน */
-    padding-bottom: 50px; /* ✅ กันชิดล่าง */
+.auth-link a {
+  color: var(--dark);
+  font-weight: 700;
+  text-decoration: none;
 }
+.auth-link a:hover { color: var(--yellow-dark); }
 
-/* Login Box */
-.login-form {
-    background-color: white;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-    text-align: center;
-    width: 100%;
-    max-width: 400px;
-}
-
-/* Input Fields */
-.input-group {
-    margin-bottom: 15px;
-    text-align: left;
-}
-
-.input-group label {
-    font-weight: bold;
-    display: block;
-    margin-bottom: 5px;
-}
-
-.input-group input {
-    width: 100%;
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-}
-
-/* Login Button */
-.login-btn {
-    width: 100%;
-    padding: 12px;
-    background: linear-gradient(to right, #0072ff, #00c6ff);
-    color: white;
-    font-size: 18px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.login-btn:hover {
-    background: linear-gradient(to right, #00c6ff, #0072ff);
-}
-
-/* Register Link */
-.register-link {
-    text-align: center;
-    margin-top: 10px;
-}
-
-.register-link a {
-    color: #007bff;
-    text-decoration: none;
-}
-
-.register-link a:hover {
-    text-decoration: underline;
-}
-
-footer {
-    width: 100%;  /* ขยายให้เต็มความกว้าง */
-    background-color: #222;
-    color: white;
-    text-align: center;
-    padding: 15px 0;
-    position: relative;  /* หรือใช้ absolute หรือ fixed ตามความต้องการ */
-    bottom: 0;
-}
-
-
-
-/* Responsive */
-@media (max-width: 768px) {
-    .search-bar {
-        flex-direction: column;
-    }
-
-    .search-bar button {
-        width: 100%;
-    }
+@media (max-width: 480px) {
+  .auth-card { padding: 28px 20px; }
 }

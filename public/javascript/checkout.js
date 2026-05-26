@@ -37,7 +37,7 @@ function submitOrder() {
             const paymentSlip = document.getElementById("payment-slip").files[0];
 
             if (!name || !address || !phone_number || !paymentSlip) {
-                alert("กรุณากรอกข้อมูลให้ครบทุกช่อง");
+                showToast("กรุณากรอกข้อมูลให้ครบทุกช่อง", "warning");
                 return;
             }
 
@@ -55,15 +55,14 @@ function submitOrder() {
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
-                    alert("สั่งซื้อสำเร็จ! ขอบคุณสำหรับการซื้อสินค้า");
-                    window.location.href = "/order-history";
+                    window.location.href = "/order-history?success=true";
                 } else {
-                    alert("เกิดข้อผิดพลาด: " + data.message);
+                    showToast("เกิดข้อผิดพลาด: " + data.message, "error");
                 }
             })
             .catch(error => {
                 console.error("Error:", error);
-                alert("เกิดข้อผิดพลาด กรุณาลองใหม่");
+                showToast("เกิดข้อผิดพลาด กรุณาลองใหม่", "error");
             });
         })
         .catch(error => console.error("Error fetching cart:", error));

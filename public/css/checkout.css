@@ -1,203 +1,128 @@
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f5f5dc;
-    box-sizing: border-box;
-    
+/* หน้า Checkout */
+.checkout-panel {
+  background: var(--white);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  padding: 28px;
+  height: 100%;
 }
 
-/* ส่วนหัว */
-.header {
-    background-color: #343a40;
-    color: white;
-    padding: 15px 0;
+.checkout-panel h3 {
+  font-size: 18px;
+  font-weight: 800;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--border);
+  color: var(--dark);
 }
 
-.header h1 {
-    margin: 0;
-    font-size: 32px !important;
+/* Order items in summary */
+.checkout-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+.checkout-item:last-of-type { border-bottom: none; }
+
+.checkout-item img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0;
+  border: 1px solid var(--border);
 }
 
-.navbar-brand {
-    font-size: 20px !important;
-    font-weight: bold !important;
+.checkout-item .item-name { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+.checkout-item .item-sub { font-size: 12px; color: var(--muted); }
+.checkout-item .item-total {
+  margin-left: auto;
+  font-weight: 800;
+  color: var(--red);
+  white-space: nowrap;
+  font-size: 15px;
 }
 
-.search-bar {
-    display: flex;
-    align-items: center;
-    gap: 5px;
+.checkout-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 0 4px;
+  font-size: 18px;
+  font-weight: 800;
+  border-top: 2px solid var(--border);
+  margin-top: 8px;
+}
+.checkout-total .amount { color: var(--red); }
+
+/* Payment form panel */
+.form-panel {
+  background: var(--white);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  padding: 28px;
+  height: 100%;
 }
 
-.search-bar input {
-    height: 40px;
-    flex-grow: 1;
+.form-panel h4 {
+  font-size: 18px;
+  font-weight: 800;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--border);
+  color: var(--dark);
 }
 
-.search-bar button {
-    height: 40px;
-    padding: 0 10px;
-    font-size: 16px;
+.form-panel .form-label { font-weight: 600; font-size: 14px; }
+
+.form-panel .form-control {
+  border-radius: 8px;
+  height: 44px;
+  border: 1.5px solid var(--border);
+  font-family: 'Sarabun', Arial, sans-serif;
+  font-size: 15px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.form-panel .form-control:focus {
+  border-color: var(--yellow);
+  box-shadow: 0 0 0 3px rgba(255,193,7,0.15);
 }
 
-.search-bar button:hover {
-    background-color: #c82333;
+/* QR Code */
+.qr-wrap {
+  text-align: center;
+  background: #f8f9fa;
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+.qr-wrap img { width: 150px; height: auto; border-radius: 8px; }
+.qr-wrap p { font-size: 13px; color: var(--muted); margin-top: 8px; margin-bottom: 0; }
+
+/* File upload */
+.form-panel input[type="file"] {
+  height: auto;
+  padding: 10px;
+  font-family: 'Sarabun', Arial, sans-serif;
 }
 
-/* Navigation Bar */
-.navbar {
-    margin-bottom: 20px;
+.btn-pay {
+  width: 100%;
+  background: var(--yellow);
+  color: var(--dark);
+  font-weight: 800;
+  font-size: 16px;
+  padding: 13px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+  font-family: 'Sarabun', Arial, sans-serif;
 }
+.btn-pay:hover { background: var(--yellow-dark); }
 
-/* ส่วนของคอนเทนเนอร์ */
-.container {
-    max-width: 1100px;
-    margin: 0 auto;
-}
-
-/* รายละเอียดตะกร้าสินค้า */
-.cart-details {
-    background-color: white;
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    margin-bottom: 30px;
-    text-align: left;
-}
-
-.cart-details h3 {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 20px;
-    color: #333;
-}
-
-.book-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 15px;
-    margin-bottom: 15px;
-    border-bottom: 1px solid #e0e0e0;
-}
-
-.book-item img {
-    width: 80px;
-    height: 80px;
-    object-fit: cover;
-    border-radius: 8px;
-    margin-right: 15px;
-}
-
-.book-item div {
-    flex: 1;
-}
-
-.book-item h5 {
-    font-size: 16px;
-    margin: 0;
-    color: #333;
-}
-
-.book-item p {
-    margin: 5px 0;
-    font-size: 14px;
-    color: #666;
-}
-
-/* ฟอร์มการชำระเงิน */
-.form-container {
-    background-color: white;
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.form-container h4 {
-    font-size: 22px;
-    font-weight: bold;
-    margin-bottom: 20px;
-    color: #333;
-}
-
-.form-container label {
-    font-weight: 500;
-    color: #333;
-}
-
-.form-container input {
-    margin-bottom: 15px;
-    border-radius: 8px;
-    border: 1px solid #ddd;
-    padding: 10px;
-}
-
-.form-container input:focus {
-    border-color: #00509e;
-    box-shadow: 0 0 5px rgba(0, 80, 158, 0.3);
-}
-
-.form-container button {
-    background-color: #00509e;
-    color: white;
-    padding: 12px 20px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    width: 100%;
-    font-size: 16px;
-    font-weight: bold;
-    transition: background-color 0.3s ease;
-}
-
-.form-container button:hover {
-    background-color: #003d7a;
-}
-
-.qr-code {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-.qr-code h5 {
-    font-size: 16px;
-    font-weight: bold;
-    margin-bottom: 10px;
-    color: #333;
-}
-
-
-
-/* ✅ ขยับ QR Code และข้อความมาทางซ้าย */
-.qr-code {
-    display: block;
-    max-width: 200px;
-    margin-left: 0; /* ขยับไปชิดซ้าย */
-}
-
-img {
-    text-align: left;
-    width: 50%;
-}
-
-
-footer {
-    text-align: center;
-    padding: 10px;
-    background-color: #333;
-    color: white;
-    font-size: 14px;
-}
-
-
-/* Responsive */
 @media (max-width: 768px) {
-    .search-bar {
-        flex-direction: column;
-    }
-
-    .search-bar button {
-        width: 100%;
-    }
+  .checkout-panel, .form-panel { padding: 20px; margin-bottom: 16px; }
 }

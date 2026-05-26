@@ -1,117 +1,126 @@
-<!-- หน้าสมัครสมาชิก register.ejs -->
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>หน้าสมัครสมาชิก</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="/css/register.css"> 
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>สมัครสมาชิก | NUI MANGA STORE</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/shared.css">
+  <link rel="stylesheet" href="/css/register.css">
 </head>
 <body>
 
-    <header class="header py-3">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-4">
-                    <h1><strong>NUI MANGA STORE</strong></h1>
-                </div>
-                <div class="col-md-4">
-                    <div class="d-flex search-bar">
-                        <input type="text" id="search-input" placeholder="ค้นหาหนังสือการ์ตูน" class="form-control me-2">
-                        <button class="btn btn-danger me-2" onclick="searchBooks()">
-                            <i class="bi bi-search"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="col-md-4 text-end mt-2">
-                    <a href="/cart" class="btn btn-outline-light"><i class="bi bi-cart-plus-fill my-1"></i> ตะกร้าสินค้า</a>
-                    <% if (user) { %>
-                        <a href="/logout" class="btn btn-outline-light my-1"><i class="bi bi-box-arrow-right"></i> ออกจากระบบ</a>
-                    <% } else { %>
-                        <a href="/login" class="btn btn-outline-light my-1"><i class="bi bi-person-workspace"></i> เข้าสู่ระบบ</a>
-                    <% } %>
-                </div>
-            </div>
+  <!-- HEADER -->
+  <header class="header py-2">
+    <div class="container">
+      <div class="row align-items-center g-2">
+        <div class="col-md-4">
+          <h1>NUI MANGA STORE</h1>
         </div>
-    </header>
-    
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="/home"><strong>NUI MANGA STORE</strong></a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            หมวดหมู่หนังสือการ์ตูน
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="/Book?category=แอคชั่น">แอคชั่น</a></li>
-                            <li><a class="dropdown-item" href="/Book?category=โรแมนซ์">โรแมนซ์</a></li>
-                            <li><a class="dropdown-item" href="/Book?category=กีฬา">กีฬา</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/order-history">ประวัติการซื้อ</a>
-                    </li>
-                </ul>
-            </div>
+        <div class="col-md-4">
+          <div class="search-bar">
+            <input type="text" id="search-input" placeholder="ค้นหาหนังสือการ์ตูน..." class="form-control">
+            <button class="btn btn-danger" onclick="searchBooks()"><i class="bi bi-search"></i></button>
+          </div>
         </div>
-    </nav>
-
-    <!-- ฟอร์มสมัครสมาชิก -->
-    <div class="login-container">
-        <form action="/register" method="post" class="login-form">
-            <h2>สมัครสมาชิก</h2>
-            <div class="input-group">
-                <label for="username">ชื่อผู้ใช้</label>
-                <input type="text" id="username" name="username" required placeholder="ชื่อผู้ใช้">
-            </div>
-            <div class="input-group">
-                <label for="email">อีเมล</label>
-                <input type="email" id="email" name="email" required placeholder="อีเมล">
-            </div>
-            <div class="input-group">
-                <label for="password">รหัสผ่าน</label>
-                <input type="password" id="password" name="password" required placeholder="รหัสผ่าน">
-            </div>
-            <button type="submit" class="login-btn">สมัครสมาชิก</button>
-            <p class="register-link">มีบัญชีแล้ว?<a href="/login">เข้าสู่ระบบ</a></p>
-        </form>
+        <div class="col-md-4 text-end d-flex align-items-center justify-content-end gap-2">
+          <a href="/cart" class="btn btn-outline-light"><i class="bi bi-cart3"></i> ตะกร้า</a>
+          <% if (user) { %>
+            <a href="/logout" class="btn btn-outline-light"><i class="bi bi-box-arrow-right"></i> ออก</a>
+          <% } else { %>
+            <a href="/login" class="btn btn-outline-light"><i class="bi bi-person"></i> เข้าสู่ระบบ</a>
+          <% } %>
+        </div>
+      </div>
     </div>
+  </header>
 
-     <!-- Modal แสดงผลการค้นหา -->
-     <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="searchModalLabel">ผลการค้นหา</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row" id="search-results-container"></div>
-                </div>
-            </div>
-        </div>
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+      <a class="navbar-brand" href="/home"><i class="bi bi-book-half me-1"></i>NUI MANGA STORE</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">หมวดหมู่</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="/Book?category=แอคชั่น"><i class="bi bi-lightning-charge me-2"></i>แอคชั่น</a></li>
+              <li><a class="dropdown-item" href="/Book?category=โรแมนซ์"><i class="bi bi-heart me-2"></i>โรแมนซ์</a></li>
+              <li><a class="dropdown-item" href="/Book?category=กีฬา"><i class="bi bi-trophy me-2"></i>กีฬา</a></li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/order-history"><i class="bi bi-clock-history me-1"></i>ประวัติการซื้อ</a>
+          </li>
+        </ul>
+      </div>
     </div>
+  </nav>
+
+  <!-- REGISTER FORM -->
+  <div class="auth-wrapper">
+    <div class="auth-card">
+      <div class="auth-logo">NUI <span>MANGA</span></div>
+      <p class="auth-subtitle">สร้างบัญชีใหม่วันนี้ !</p>
+      <h2>สมัครสมาชิก</h2>
 
 
+      <form action="/register" method="POST">
+        <div class="mb-3">
+          <label class="form-label" for="username">ชื่อผู้ใช้</label>
+          <input type="text" id="username" name="username" class="form-control" placeholder="ชื่อผู้ใช้ของคุณ" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label" for="email">อีเมล</label>
+          <input type="email" id="email" name="email" class="form-control" placeholder="example@email.com" required>
+        </div>
+        <div class="mb-4">
+          <label class="form-label" for="password">รหัสผ่าน</label>
+          <input type="password" id="password" name="password" class="form-control" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn-auth">สมัครสมาชิก</button>
+      </form>
 
-    <!-- Footer -->
-    <footer class="bg-dark text-white text-center py-3 mt-5">
-        <p>&copy; 2025 Nui&Dream.com | All Rights Reserved</p>
-        <p>
-            <a href="#" class="text-white me-2"><i class="bi bi-facebook"></i> Facebook</a>
-            <a href="#" class="text-white me-2"><i class="bi bi-twitter"></i> Twitter</a>
-            <a href="#" class="text-white"><i class="bi bi-instagram"></i> Instagram</a>
-        </p>
-    </footer>
-    <script src="/javascript/search.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+      <p class="auth-link">มีบัญชีแล้ว? <a href="/login">เข้าสู่ระบบ</a></p>
+    </div>
+  </div>
+
+  <!-- SEARCH MODAL -->
+  <div class="modal fade" id="searchModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold">ผลการค้นหา</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row g-3" id="search-results-container"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="bg-dark text-white text-center py-4">
+    <p class="mb-1 fw-bold" style="color:#ffc107;">NUI MANGA STORE</p>
+    <p class="mb-2" style="font-size:13px;">&copy; 2025 Nui&amp;Dream.com | All Rights Reserved</p>
+    <p class="mb-0">
+      <a href="#" class="text-white-50 me-3"><i class="bi bi-facebook"></i></a>
+      <a href="#" class="text-white-50 me-3"><i class="bi bi-twitter-x"></i></a>
+      <a href="#" class="text-white-50"><i class="bi bi-instagram"></i></a>
+    </p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/javascript/toast.js"></script>
+  <script src="/javascript/transition.js"></script>
+  <script src="/javascript/search.js"></script>
+  <% if (typeof error !== 'undefined' && error) { %>
+  <script>document.addEventListener('DOMContentLoaded', () => showToast('<%= error.replace(/'/g, "\\'") %>', 'error', 5000));</script>
+  <% } %>
 </body>
 </html>

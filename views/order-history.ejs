@@ -1,140 +1,178 @@
-<!-- หน้าโชว์ประวัติการซื้อ order-history.ejs -->
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ประวัติการซื้อ</title>
-    <link rel="stylesheet" href="/css/order-history.css"> <!-- นำเข้าไฟล์ CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ประวัติการซื้อ | NUI MANGA STORE</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/shared.css">
+  <link rel="stylesheet" href="/css/order-history.css">
 </head>
 <body>
 
-    <header class="header py-3">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-4">
-                    <h1><strong>NUI MANGA STORE</strong></h1>
-                </div>
-                <div class="col-md-4">
-                    <div class="d-flex search-bar">
-                        <input type="text" id="search-input" placeholder="ค้นหาหนังสือการ์ตูน" class="form-control me-2">
-                        <button class="btn btn-danger me-2" onclick="searchBooks()">
-                            <i class="bi bi-search"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="col-md-4 text-end mt-2">
-                    <a href="/cart" class="btn btn-outline-light"><i class="bi bi-cart-plus-fill my-1"></i> ตะกร้าสินค้า</a>
-                    <% if (user) { %>
-                        <a href="/logout" class="btn btn-outline-light my-1"><i class="bi bi-box-arrow-right"></i> ออกจากระบบ</a>
-                    <% } else { %>
-                        <a href="/login" class="btn btn-outline-light my-1"><i class="bi bi-person-workspace"></i> เข้าสู่ระบบ</a>
-                    <% } %>
-                </div>
-            </div>
+  <!-- HEADER -->
+  <header class="header py-2">
+    <div class="container">
+      <div class="row align-items-center g-2">
+        <div class="col-md-4">
+          <h1>NUI MANGA STORE</h1>
         </div>
-    </header>
-    
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="/home"><strong>NUI MANGA STORE</strong></a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            หมวดหมู่หนังสือการ์ตูน
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="/Book?category=แอคชั่น">แอคชั่น</a></li>
-                            <li><a class="dropdown-item" href="/Book?category=โรแมนซ์">โรแมนซ์</a></li>
-                            <li><a class="dropdown-item" href="/Book?category=กีฬา">กีฬา</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/order-history">ประวัติการซื้อ</a>
-                    </li>
-                </ul>
-            </div>
+        <div class="col-md-4">
+          <div class="search-bar">
+            <input type="text" id="search-input" placeholder="ค้นหาหนังสือการ์ตูน..." class="form-control">
+            <button class="btn btn-danger" onclick="searchBooks()"><i class="bi bi-search"></i></button>
+          </div>
         </div>
-    </nav>
-
-    
-
-
-    
-
-
-    <div class="container mt-5">
-        <h2 class="text-center mb-4">ประวัติการสั่งซื้อ</h2>
-        <div class="table-responsive d-flex justify-content-center">
-            <table class="table table-sm table-bordered w-80 bg-light text-center">
-                <thead class="table-dark">
-                    <tr>
-                        <th>Order ID</th>
-                        <th>วันที่</th>
-                        <th>ชื่อ</th>
-                        <th>ที่อยู่</th>
-                        <th>เบอร์โทร</th>
-                        <th>ยอดรวม</th>
-                        <th>สถานะ</th>
-                        <th>สลิป</th>
-                        <th>สินค้า</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% orders.forEach(order => { %>
-                    <tr>
-                        <td><%= order.order_id %></td>
-                        <td><%= new Date(order.order_date).toLocaleDateString() %></td>
-                        <td><%= order.user_name %></td>
-                        <td class="text-start"><%= order.address %></td>
-                        <td><%= order.phone_number %></td>
-                        <td>฿<%= order.total_item_price %></td>
-                        <td class="<%= order.payment_status === 'Pending' ? 'text-warning fw-bold' : 'text-success fw-bold' %>">
-                            <%= order.payment_status %>
-                        </td>
-                        <td><a href="<%= order.payment_slip %>" target="_blank" class="text-primary">ดูสลิป</a></td>
-                        <td>
-                            <ul class="text-start">
-                                <% order.items.forEach(item => { %>
-                                    <li>
-                                        <strong><%= item.title %></strong><br>
-                                        จำนวน: <%= item.quantity %> | ราคา: ฿<%= item.price %>
-                                    </li>
-                                <% }) %>
-                            </ul>
-                        </td>
-                    </tr>
-                    <% }) %>
-                </tbody>
-            </table>
+        <div class="col-md-4 text-end d-flex align-items-center justify-content-end gap-2">
+          <a href="/cart" class="btn btn-outline-light"><i class="bi bi-cart3"></i> ตะกร้า</a>
+          <% if (user) { %>
+            <a href="/logout" class="btn btn-outline-light"><i class="bi bi-box-arrow-right"></i> ออก</a>
+          <% } else { %>
+            <a href="/login" class="btn btn-outline-light"><i class="bi bi-person"></i> เข้าสู่ระบบ</a>
+          <% } %>
         </div>
+      </div>
     </div>
-    
+  </header>
 
-
-     <!-- Modal แสดงผลการค้นหา -->
-     <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="searchModalLabel">ผลการค้นหา</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row" id="search-results-container"></div>
-                </div>
-            </div>
-        </div>
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+      <a class="navbar-brand" href="/home"><i class="bi bi-book-half me-1"></i>NUI MANGA STORE</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">หมวดหมู่</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="/Book?category=แอคชั่น">แอคชั่น</a></li>
+              <li><a class="dropdown-item" href="/Book?category=โรแมนซ์">โรแมนซ์</a></li>
+              <li><a class="dropdown-item" href="/Book?category=กีฬา">กีฬา</a></li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="/order-history">ประวัติการซื้อ</a>
+          </li>
+        </ul>
+      </div>
     </div>
+  </nav>
 
-    <script src="/javascript/search.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <main>
+    <div class="container py-5">
+      <h2 class="section-heading mb-4"><i class="bi bi-clock-history me-2"></i>ประวัติการสั่งซื้อ</h2>
+
+      <% if (orders.length === 0) { %>
+        <div class="empty-history">
+          <i class="bi bi-bag-x"></i>
+          <p>ยังไม่มีประวัติการสั่งซื้อ</p>
+          <a href="/Book">เลือกซื้อสินค้า</a>
+        </div>
+      <% } else { %>
+        <% orders.forEach(order => { %>
+        <div class="order-card">
+
+          <!-- Card header -->
+          <div class="order-card-header">
+            <div>
+              <div class="order-id"><i class="bi bi-hash"></i>Order <%= order.order_id %></div>
+              <div class="order-date"><i class="bi bi-calendar3 me-1"></i><%= new Date(order.order_date).toLocaleDateString('th-TH', {year:'numeric',month:'long',day:'numeric'}) %></div>
+            </div>
+            <span class="status-badge <%= order.payment_status === 'Completed' ? 'status-completed' : 'status-pending' %>">
+              <% if (order.payment_status === 'Completed') { %>
+                <i class="bi bi-check-circle me-1"></i>ชำระแล้ว
+              <% } else { %>
+                <i class="bi bi-hourglass-split me-1"></i>รอตรวจสอบ
+              <% } %>
+            </span>
+          </div>
+
+          <!-- Card body -->
+          <div class="order-card-body">
+            <div class="order-meta">
+              <div class="order-meta-item">
+                <div class="meta-label">ชื่อผู้รับ</div>
+                <div class="meta-value"><%= order.user_name %></div>
+              </div>
+              <div class="order-meta-item">
+                <div class="meta-label">เบอร์โทร</div>
+                <div class="meta-value"><%= order.phone_number %></div>
+              </div>
+              <div class="order-meta-item" style="grid-column: 1 / -1;">
+                <div class="meta-label">ที่อยู่จัดส่ง</div>
+                <div class="meta-value"><%= order.address %></div>
+              </div>
+            </div>
+
+            <ul class="order-items-list">
+              <% order.items.forEach(item => { %>
+              <li class="order-item">
+                <span class="item-name"><i class="bi bi-book me-2 text-muted"></i><%= item.title %></span>
+                <span class="item-qty">× <%= item.quantity %></span>
+                <span class="item-price">฿<%= Number(item.price * item.quantity).toLocaleString() %></span>
+              </li>
+              <% }) %>
+            </ul>
+          </div>
+
+          <!-- Card footer -->
+          <div class="order-card-footer">
+            <div>
+              <div class="order-total-label">ยอดรวมทั้งหมด</div>
+              <div class="order-total-amount">฿<%= Number(order.total_item_price).toLocaleString() %></div>
+            </div>
+            <a href="<%= order.payment_slip %>" target="_blank" class="btn-slip">
+              <i class="bi bi-image"></i> ดูสลิป
+            </a>
+          </div>
+
+        </div>
+        <% }) %>
+      <% } %>
+    </div>
+  </main>
+
+  <!-- SEARCH MODAL -->
+  <div class="modal fade" id="searchModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold">ผลการค้นหา</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row g-3" id="search-results-container"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="bg-dark text-white text-center py-4">
+    <p class="mb-1 fw-bold" style="color:#ffc107;">NUI MANGA STORE</p>
+    <p class="mb-2" style="font-size:13px;">&copy; 2025 Nui&amp;Dream.com | All Rights Reserved</p>
+    <p class="mb-0">
+      <a href="#" class="text-white-50 me-3"><i class="bi bi-facebook"></i></a>
+      <a href="#" class="text-white-50 me-3"><i class="bi bi-twitter-x"></i></a>
+      <a href="#" class="text-white-50"><i class="bi bi-instagram"></i></a>
+    </p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/javascript/toast.js"></script>
+  <script src="/javascript/transition.js"></script>
+  <script src="/javascript/search.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('success') === 'true') {
+        showToast('สั่งซื้อสำเร็จ! ขอบคุณสำหรับการซื้อสินค้า', 'success', 5000);
+        window.history.replaceState({}, '', '/order-history');
+      }
+    });
+  </script>
 </body>
 </html>
