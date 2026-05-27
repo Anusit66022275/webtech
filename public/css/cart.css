@@ -188,3 +188,16 @@
   .cart-item-card .item-title { font-size: 13px; }
   .cart-summary { position: static; }
 }
+
+/* ════ DARK MODE ════ */
+[data-theme="dark"] .cart-item-card { background: var(--white); }
+[data-theme="dark"] .qty-btn {
+  background: #252836; border-color: var(--border); color: var(--text);
+}
+[data-theme="dark"] .qty-btn:hover { border-color: var(--yellow); background: #2d2600; }
+[data-theme="dark"] .btn-remove { background: #2d1a1c; border-color: #5a2a2d; }
+[data-theme="dark"] .cart-summary { background: var(--white); }
+[data-theme="dark"] .cart-summary .summary-title { border-bottom-color: var(--border); }
+[data-theme="dark"] .summary-row.total { border-top-color: var(--border); }
+[data-theme="dark"] .btn-continue { color: var(--muted); border-color: var(--border); }
+[data-theme="dark"] .btn-continue:hover { border-color: var(--text); color: var(--text); }

@@ -8,6 +8,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
   <link rel="stylesheet" href="/css/shared.css">
   <link rel="stylesheet" href="/css/book-details.css">
+  <script src="/javascript/darkmode.js"></script>
 </head>
 <body>
 
@@ -25,8 +26,10 @@
           </div>
         </div>
         <div class="col-md-4 text-end d-flex align-items-center justify-content-end gap-2">
+          <button id="dark-mode-btn" class="btn btn-outline-light" onclick="toggleDarkMode()" title="Dark Mode" style="padding:6px 10px;"><i class="bi bi-moon-fill"></i></button>
           <a href="/cart" class="btn btn-outline-light"><i class="bi bi-cart3"></i> ตะกร้า</a>
           <% if (user) { %>
+            <a href="/profile" class="btn btn-outline-light" title="โปรไฟล์" style="padding:6px 10px;"><i class="bi bi-person-gear"></i></a>
             <a href="/logout" class="btn btn-outline-light"><i class="bi bi-box-arrow-right"></i> ออก</a>
           <% } else { %>
             <a href="/login" class="btn btn-outline-light"><i class="bi bi-person"></i> เข้าสู่ระบบ</a>
@@ -48,9 +51,9 @@
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">หมวดหมู่</a>
             <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="/Book?category=แอคชั่น">แอคชั่น</a></li>
-              <li><a class="dropdown-item" href="/Book?category=โรแมนซ์">โรแมนซ์</a></li>
-              <li><a class="dropdown-item" href="/Book?category=กีฬา">กีฬา</a></li>
+              <% (genres || []).forEach(g => { %>
+              <li><a class="dropdown-item" href="/Book?category=<%= encodeURIComponent(g) %>"><%= g %></a></li>
+              <% }) %>
             </ul>
           </li>
           <li class="nav-item">
@@ -69,7 +72,7 @@
         <div class="row g-4">
           <div class="col-md-4 d-flex align-items-start justify-content-center">
             <img class="book-cover"
-                 src="<%= book.image && book.image.startsWith('http') ? book.image : '/uploads/' + book.image %>"
+                 src="<%= book.image %>"
                  onerror="this.src='/uploads/default.png'"
                  alt="<%= book.title %>">
           </div>
@@ -77,12 +80,28 @@
             <span class="book-genre-badge"><%= book.genre || 'มังงะ' %></span>
             <h1 class="book-title-lg"><%= book.title %></h1>
             <div class="book-price-lg">฿<%= Number(book.price).toLocaleString() %></div>
-            <div class="book-stock-lg"><i class="bi bi-box-seam me-1"></i>คงเหลือ <%= book.stock %> เล่ม</div>
+            <% if (book.stock === 0) { %>
+              <div class="book-stock-lg" style="color:var(--red);font-weight:700;">
+                <i class="bi bi-x-circle me-1"></i>สินค้าหมด
+              </div>
+            <% } else { %>
+              <div class="book-stock-lg"><i class="bi bi-box-seam me-1"></i>คงเหลือ <%= book.stock %> เล่ม</div>
+            <% } %>
             <p class="book-desc"><%= book.description %></p>
-            <button class="btn-add-cart"
-              onclick="addToCart('<%= book.id %>', '<%= book.title.replace(/'/g, "\\'") %>', <%= book.price %>, '<%= book.image && book.image.startsWith('http') ? book.image : '/uploads/' + book.image %>')">
-              <i class="bi bi-cart-plus"></i> เพิ่มลงตะกร้า
-            </button>
+            <% if (book.stock === 0) { %>
+              <button class="btn-add-cart" disabled
+                style="background:#dee2e6;color:#6c757d;cursor:not-allowed;opacity:0.7;">
+                <i class="bi bi-slash-circle"></i> สินค้าหมด
+              </button>
+            <% } else { %>
+              <button class="btn-add-cart" id="btn-add-cart"
+                data-id="<%= book.id %>"
+                data-title="<%= book.title %>"
+                data-price="<%= book.price %>"
+                data-image="<%= book.image %>">
+                <i class="bi bi-cart-plus"></i> เพิ่มลงตะกร้า
+              </button>
+            <% } %>
           </div>
         </div>
       </div>
@@ -164,7 +183,26 @@
   <script src="/javascript/search.js"></script>
 
   <script>
-    const bookId = "<%= book.id %>";
+    const bookId      = "<%= book.id %>";
+    const currentUser = <%- JSON.stringify(user || '') %>;
+    const isAdminUser = <%- userRole === 'admin' ? 'true' : 'false' %>;
+
+    const addCartBtn = document.getElementById('btn-add-cart');
+    if (addCartBtn) {
+      addCartBtn.addEventListener('click', function() {
+        const { id, title, price, image } = this.dataset;
+        addToCart(id, title, price, image);
+      });
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
 
     function loadReviews() {
       fetch(`/reviews/${bookId}`)
@@ -175,13 +213,18 @@
             container.innerHTML = '<p class="text-muted" style="font-size:14px;">ยังไม่มีรีวิวสำหรับหนังสือเล่มนี้</p>';
             return;
           }
-          container.innerHTML = reviews.map(r => `
-            <div class="review-item">
-              <div class="reviewer-name"><i class="bi bi-person-circle me-1"></i>${r.user}</div>
-              <div class="review-stars">${'⭐'.repeat(r.rating)}</div>
-              <div class="review-comment">${r.comment}</div>
-            </div>
-          `).join('');
+          container.innerHTML = reviews.map(r => {
+            const canDelete = currentUser && (isAdminUser || r.user === currentUser);
+            return `
+            <div class="review-item" id="review-${r.id}">
+              <div class="d-flex justify-content-between align-items-start">
+                <div class="reviewer-name"><i class="bi bi-person-circle me-1"></i>${escapeHtml(r.user)}</div>
+                ${canDelete ? `<button class="btn-review-delete" onclick="deleteReview(${r.id})" title="ลบรีวิว"><i class="bi bi-trash"></i></button>` : ''}
+              </div>
+              <div class="review-stars">${'⭐'.repeat(Number(r.rating))}</div>
+              <div class="review-comment">${escapeHtml(r.comment)}</div>
+            </div>`;
+          }).join('');
         })
         .catch(() => {
           document.getElementById("reviews-list").innerHTML = '<p class="text-muted">โหลดรีวิวไม่สำเร็จ</p>';
@@ -209,6 +252,24 @@
           showToast("เกิดข้อผิดพลาด: " + (result.error || "ไม่ทราบสาเหตุ"), "error");
         }
       });
+    }
+
+    function deleteReview(id) {
+      if (!confirm('ลบรีวิวนี้?')) return;
+      fetch(`/reviews/${id}`, { method: 'DELETE' })
+        .then(r => r.json())
+        .then(res => {
+          if (res.success) {
+            document.getElementById(`review-${id}`)?.remove();
+            showToast('ลบรีวิวสำเร็จ', 'success');
+            const list = document.getElementById('reviews-list');
+            if (!list.querySelector('.review-item')) {
+              list.innerHTML = '<p class="text-muted" style="font-size:14px;">ยังไม่มีรีวิวสำหรับหนังสือเล่มนี้</p>';
+            }
+          } else {
+            showToast(res.error || 'เกิดข้อผิดพลาด', 'error');
+          }
+        });
     }
 
     document.addEventListener("DOMContentLoaded", loadReviews);

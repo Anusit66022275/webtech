@@ -93,3 +93,14 @@
 @media (max-width: 480px) {
   .auth-card { padding: 28px 20px; }
 }
+
+/* ════ DARK MODE ════ */
+[data-theme="dark"] .auth-card { background: var(--white); }
+[data-theme="dark"] .auth-card .auth-logo,
+[data-theme="dark"] .auth-card h2,
+[data-theme="dark"] .auth-card .form-label { color: var(--text); }
+[data-theme="dark"] .auth-card .form-control {
+  background: #252836; border-color: var(--border); color: var(--text);
+}
+[data-theme="dark"] .auth-card .form-control::placeholder { color: var(--muted); }
+[data-theme="dark"] .auth-link a { color: var(--text); }

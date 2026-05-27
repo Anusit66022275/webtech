@@ -126,3 +126,17 @@
 @media (max-width: 768px) {
   .checkout-panel, .form-panel { padding: 20px; margin-bottom: 16px; }
 }
+
+/* ════ DARK MODE ════ */
+[data-theme="dark"] .checkout-panel,
+[data-theme="dark"] .form-panel { background: var(--white); }
+[data-theme="dark"] .checkout-panel h3,
+[data-theme="dark"] .form-panel h4 { color: var(--text); border-bottom-color: var(--border); }
+[data-theme="dark"] .checkout-item { border-bottom-color: var(--border); }
+[data-theme="dark"] .checkout-total { border-top-color: var(--border); }
+[data-theme="dark"] .qr-wrap { background: #252836; }
+[data-theme="dark"] .form-panel .form-control {
+  background: #252836; border-color: var(--border); color: var(--text);
+}
+[data-theme="dark"] .form-panel .form-control::placeholder { color: var(--muted); }
+[data-theme="dark"] .form-panel .form-label { color: var(--text); }

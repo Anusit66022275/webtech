@@ -8,6 +8,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
   <link rel="stylesheet" href="/css/shared.css">
   <link rel="stylesheet" href="/css/login.css">
+  <script src="/javascript/darkmode.js"></script>
 </head>
 <body>
 
@@ -25,6 +26,7 @@
           </div>
         </div>
         <div class="col-md-4 text-end d-flex align-items-center justify-content-end gap-2">
+          <button id="dark-mode-btn" class="btn btn-outline-light" onclick="toggleDarkMode()" title="Dark Mode" style="padding:6px 10px;"><i class="bi bi-moon-fill"></i></button>
           <a href="/cart" class="btn btn-outline-light"><i class="bi bi-cart3"></i> ตะกร้า</a>
           <% if (user) { %>
             <a href="/logout" class="btn btn-outline-light"><i class="bi bi-box-arrow-right"></i> ออก</a>
@@ -48,9 +50,9 @@
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">หมวดหมู่</a>
             <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="/Book?category=แอคชั่น"><i class="bi bi-lightning-charge me-2"></i>แอคชั่น</a></li>
-              <li><a class="dropdown-item" href="/Book?category=โรแมนซ์"><i class="bi bi-heart me-2"></i>โรแมนซ์</a></li>
-              <li><a class="dropdown-item" href="/Book?category=กีฬา"><i class="bi bi-trophy me-2"></i>กีฬา</a></li>
+              <% (genres || []).forEach(g => { %>
+              <li><a class="dropdown-item" href="/Book?category=<%= encodeURIComponent(g) %>"><%= g %></a></li>
+              <% }) %>
             </ul>
           </li>
           <li class="nav-item">

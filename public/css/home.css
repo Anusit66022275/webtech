@@ -5,3 +5,59 @@
   flex: 1;
   padding-bottom: 48px;
 }
+
+/* ── Sort select ── */
+.sort-select {
+  border-color: var(--border);
+  color: var(--text);
+  background-color: var(--white);
+  font-family: 'Sarabun', Arial, sans-serif;
+}
+.sort-select:focus {
+  border-color: var(--yellow);
+  box-shadow: 0 0 0 0.2rem rgba(255,193,7,0.15);
+}
+
+
+/* ── Pagination ── */
+.pagination .page-link {
+  border-radius: 8px !important;
+  margin: 0 2px;
+  color: var(--dark);
+  border-color: var(--border);
+  font-family: 'Sarabun', Arial, sans-serif;
+  font-weight: 600;
+}
+.pagination .page-item.active .page-link {
+  background: var(--yellow);
+  border-color: var(--yellow);
+  color: var(--dark);
+}
+.pagination .page-link:hover {
+  background: var(--yellow);
+  border-color: var(--yellow);
+  color: var(--dark);
+}
+.pagination .page-item.disabled .page-link { opacity: 0.4; }
+
+/* Dark mode overrides */
+[data-theme="dark"] .sort-select {
+  background-color: #252836;
+  border-color: #3a3f55;
+  color: #dde1ec;
+}
+[data-theme="dark"] .pagination .page-link {
+  background: #1c1f2e;
+  border-color: #3a3f55;
+  color: #dde1ec;
+}
+[data-theme="dark"] .pagination .page-item.active .page-link {
+  background: var(--yellow);
+  border-color: var(--yellow);
+  color: #1a1d23;
+}
+[data-theme="dark"] .pagination .page-link:hover {
+  background: var(--yellow);
+  border-color: var(--yellow);
+  color: #1a1d23;
+}

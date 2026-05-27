@@ -1,21 +1,22 @@
 require('dotenv').config();
 
-const express = require('express');
-const path = require('path');
-const mysql = require('mysql');
+const express    = require('express');
+const path       = require('path');
+const mysql      = require('mysql');
 const cookieParser = require('cookie-parser');
-const session = require('express-session');
-const flash = require('connect-flash');
-const multer = require('multer');
-const bcrypt = require('bcryptjs');
-const rateLimit = require('express-rate-limit');
+const session    = require('express-session');
+const flash      = require('connect-flash');
+const multer     = require('multer');
+const bcrypt     = require('bcryptjs');
+const rateLimit  = require('express-rate-limit');
 
 const app = express();
-const port = process.env.PORT || 3306;
+const port = process.env.PORT || 3000;
 
 // ใช้ pool แทน single connection — reconnect อัตโนมัติเมื่อ connection หลุด
 const db = mysql.createPool({
     host: process.env.DB_HOST,
+    port: process.env.DB_PORT || 3306,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
@@ -38,13 +39,22 @@ app.use(session({
 app.use(flash());
 
 app.use((req, res, next) => {
-    res.locals.user = req.session.user_name || null;
-    next();
+    res.locals.user     = req.session.user_name || null;
+    res.locals.userRole = req.session.user_role || null;
+    db.query(
+        "SELECT DISTINCT genre FROM books WHERE genre IS NOT NULL AND genre != '' ORDER BY genre ASC",
+        (err, rows) => {
+            res.locals.genres = err ? [] : rows.map(r => r.genre);
+            next();
+        }
+    );
 });
 
-// รับเฉพาะรูปภาพ ไม่เกิน 5MB
+// Local storage — ไฟล์เก็บใน uploads/
 const storage = multer.diskStorage({
-    destination: 'uploads/',
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/');
+    },
     filename: (req, file, cb) => {
         cb(null, Date.now() + path.extname(file.originalname));
     }
@@ -124,16 +134,34 @@ app.get('/home', (req, res) => {
 
 
 app.get('/admin', isAdmin, (req, res) => {
-    db.query("SELECT * FROM books", (err, results) => {
+    db.query("SELECT * FROM books ORDER BY title ASC", (err, books) => {
         if (err) return res.status(500).send(err.message);
-        res.render('admin', { books: results });
+        db.query("SELECT COUNT(*) AS cnt FROM books WHERE stock = 0", (err, r1) => {
+            if (err) return res.status(500).send(err.message);
+            db.query("SELECT COUNT(*) AS cnt FROM orders WHERE payment_status = 'Pending'", (err, r2) => {
+                if (err) return res.status(500).send(err.message);
+                db.query("SELECT COALESCE(SUM(total_price),0) AS revenue FROM orders WHERE payment_status = 'Completed'", (err, r3) => {
+                    if (err) return res.status(500).send(err.message);
+                    res.render('admin', {
+                        books,
+                        stats: {
+                            total:   books.length,
+                            oos:     r1[0].cnt,
+                            pending: r2[0].cnt,
+                            revenue: r3[0].revenue
+                        }
+                    });
+                });
+            });
+        });
     });
 });
 
 app.get('/admin/add', isAdmin, (req, res) => res.render('admin-add'));
 
-app.post('/admin/add', isAdmin, (req, res) => {
-    const { title, genre, price, stock, image, description } = req.body;
+app.post('/admin/add', isAdmin, upload.single('imageFile'), (req, res) => {
+    const { title, genre, price, stock, imageUrl, description } = req.body;
+    const image = req.file ? `/uploads/${req.file.filename}` : (imageUrl || '');
     db.query(
         "INSERT INTO books (title, genre, price, stock, image, description) VALUES (?, ?, ?, ?, ?, ?)",
         [title, genre, price, stock, image, description],
@@ -151,8 +179,16 @@ app.get('/admin/edit/:id', isAdmin, (req, res) => {
     });
 });
 
-app.post('/admin/edit/:id', isAdmin, (req, res) => {
-    const { title, genre, price, stock, image, description } = req.body;
+app.post('/admin/edit/:id', isAdmin, upload.single('imageFile'), (req, res) => {
+    const { title, genre, price, stock, imageUrl, description, currentImage } = req.body;
+    let image;
+    if (req.file) {
+        image = `/uploads/${req.file.filename}`;
+    } else if (imageUrl && imageUrl.trim() !== '') {
+        image = imageUrl.trim();
+    } else {
+        image = currentImage;
+    }
     db.query(
         "UPDATE books SET title = ?, genre = ?, price = ?, stock = ?, image = ?, description = ? WHERE id = ?",
         [title, genre, price, stock, image, description, req.params.id],
@@ -164,34 +200,67 @@ app.post('/admin/edit/:id', isAdmin, (req, res) => {
 });
 
 app.post('/admin/delete/:id', isAdmin, (req, res) => {
-    db.query("DELETE FROM books WHERE id = ?", [req.params.id], (err) => {
-        if (err) return res.status(500).send(err.message);
-        res.redirect('/admin');
-    });
+    db.query(
+        `SELECT COUNT(*) AS cnt FROM order_items oi
+         JOIN orders o ON oi.order_id = o.order_id
+         WHERE oi.book_id = ? AND o.payment_status = 'Pending'`,
+        [req.params.id],
+        (err, results) => {
+            if (err) return res.status(500).json({ success: false, error: err.message });
+            if (results[0].cnt > 0) {
+                return res.json({ success: false, message: 'ไม่สามารถลบได้ เนื่องจากหนังสือนี้อยู่ในคำสั่งซื้อที่รอดำเนินการอยู่' });
+            }
+            db.query("DELETE FROM books WHERE id = ?", [req.params.id], (err) => {
+                if (err) return res.status(500).json({ success: false, error: err.message });
+                res.json({ success: true });
+            });
+        }
+    );
 });
 
 
 app.get("/Book", (req, res) => {
     const category    = req.query.category || '';
     const searchQuery = req.query.search   || '';
+    const sort        = req.query.sort     || '';
+    const limit       = 12;
+    const page        = Math.max(1, parseInt(req.query.page) || 1);
+    const offset      = (page - 1) * limit;
 
-    let sql, params;
+    const orderBy = sort === 'price_asc'  ? 'ORDER BY price ASC'
+                  : sort === 'price_desc' ? 'ORDER BY price DESC'
+                  : 'ORDER BY title ASC';
+
+    let countSql, dataSql, params;
     if (searchQuery) {
         const like = `%${searchQuery}%`;
-        sql    = "SELECT * FROM books WHERE title LIKE ? OR genre LIKE ? OR description LIKE ? ORDER BY title ASC";
-        params = [like, like, like];
+        countSql = "SELECT COUNT(*) AS total FROM books WHERE title LIKE ? OR genre LIKE ? OR description LIKE ?";
+        dataSql  = `SELECT * FROM books WHERE title LIKE ? OR genre LIKE ? OR description LIKE ? ${orderBy} LIMIT ? OFFSET ?`;
+        params   = [like, like, like];
     } else {
-        sql    = "SELECT * FROM books WHERE genre LIKE ? ORDER BY title ASC";
-        params = [`%${category}%`];
+        countSql = "SELECT COUNT(*) AS total FROM books WHERE genre LIKE ?";
+        dataSql  = `SELECT * FROM books WHERE genre LIKE ? ${orderBy} LIMIT ? OFFSET ?`;
+        params   = [`%${category}%`];
     }
 
-    db.query(sql, params, (err, results) => {
+    db.query(countSql, params, (err, countResult) => {
         if (err) return res.status(500).json({ error: err.message });
-        res.render("Book", {
-            books: results,
-            user: req.session.user_name || null,
-            selectedCategory: category,
-            searchQuery
+        const total       = countResult[0].total;
+        const totalPages  = Math.ceil(total / limit) || 1;
+        const currentPage = Math.min(page, totalPages);
+
+        db.query(dataSql, [...params, limit, offset], (err, results) => {
+            if (err) return res.status(500).json({ error: err.message });
+            res.render("Book", {
+                books: results,
+                user: req.session.user_name || null,
+                selectedCategory: category,
+                searchQuery,
+                selectedSort: sort,
+                currentPage,
+                totalPages,
+                total
+            });
         });
     });
 });
@@ -251,28 +320,34 @@ app.post('/cart', (req, res) => {
         return res.status(400).json({ success: false, message: "ข้อมูลสินค้าไม่ถูกต้อง" });
     }
 
-    if (!image || image.trim() === "") {
-        db.query("SELECT image FROM books WHERE id = ?", [id], (err, results) => {
-            if (err) return res.status(500).json({ error: err.message });
-            image = results.length > 0 ? (results[0].image || "/uploads/default.png") : "/uploads/default.png";
-            addToCart(cartData, id, title, price, quantity, image, res);
-        });
-    } else {
-        addToCart(cartData, id, title, price, quantity, image, res);
-    }
-});
+    db.query("SELECT image, stock FROM books WHERE id = ?", [id], (err, results) => {
+        if (err) return res.status(500).json({ error: err.message });
+        if (results.length === 0) return res.json({ success: false, error: "ไม่พบหนังสือ" });
 
-function addToCart(cartData, id, title, price, quantity, image, res) {
-    const existingItem = cartData.find(item => item.id == id);
-    if (existingItem) {
-        existingItem.quantity += parseInt(quantity);
-        existingItem.image = image;
-    } else {
-        cartData.push({ id, title, price: parseFloat(price), quantity: parseInt(quantity), image });
-    }
-    res.cookie('cart', JSON.stringify(cartData), { httpOnly: true, maxAge: 3600000 });
-    res.json({ success: true, cart: cartData });
-}
+        const bookImage = (image && image.trim() !== "") ? image : (results[0].image || "/uploads/default.png");
+        const stock = results[0].stock;
+        const addQty = parseInt(quantity);
+
+        const existingItem = cartData.find(item => item.id == id);
+        const currentQty = existingItem ? existingItem.quantity : 0;
+
+        if (currentQty + addQty > stock) {
+            const msg = currentQty > 0
+                ? `สินค้านี้มีในสต็อกเพียง ${stock} เล่ม (มีในตะกร้าแล้ว ${currentQty} เล่ม)`
+                : `สินค้านี้มีในสต็อกเพียง ${stock} เล่มเท่านั้น`;
+            return res.json({ success: false, error: msg });
+        }
+
+        if (existingItem) {
+            existingItem.quantity += addQty;
+            existingItem.image = bookImage;
+        } else {
+            cartData.push({ id, title, price: parseFloat(price), quantity: addQty, image: bookImage });
+        }
+        res.cookie('cart', JSON.stringify(cartData), { httpOnly: true, maxAge: 3600000 });
+        res.json({ success: true, cart: cartData });
+    });
+});
 
 
 app.get('/checkout', isLoggedIn, (req, res) => {
@@ -300,6 +375,11 @@ app.post('/checkout', isLoggedIn, upload.single('paymentSlip'), (req, res) => {
 
     if (!name || !address || !phone_number || !paymentSlipPath) {
         return res.json({ success: false, message: 'กรุณากรอกข้อมูลให้ครบทุกช่อง' });
+    }
+
+    const phoneClean = phone_number.replace(/[-\s]/g, '');
+    if (!/^0[0-9]{8,9}$/.test(phoneClean)) {
+        return res.json({ success: false, message: 'เบอร์โทรศัพท์ไม่ถูกต้อง (ต้องขึ้นต้นด้วย 0 และมี 9-10 หลัก)' });
     }
 
     const bookIds = cartData.map(item => item.id);
@@ -491,35 +571,153 @@ app.post('/cart/remove', (req, res) => {
 });
 
 app.post('/cart/update', (req, res) => {
+    let cartData;
     try {
-        let cartData = req.cookies.cart ? JSON.parse(req.cookies.cart) : [];
+        cartData = req.cookies.cart ? JSON.parse(req.cookies.cart) : [];
         if (!Array.isArray(cartData)) cartData = [];
+    } catch {
+        return res.json({ success: false, message: "เกิดข้อผิดพลาดในการอัปเดตสินค้า" });
+    }
 
-        const { index, action } = req.body;
-        if (index >= 0 && index < cartData.length) {
-            if (action === 'increase') {
-                cartData[index].quantity += 1;
-            } else if (action === 'decrease') {
-                if (cartData[index].quantity > 1) {
-                    cartData[index].quantity -= 1;
-                } else {
-                    cartData.splice(index, 1);
-                }
+    const { index, action } = req.body;
+    if (!(index >= 0 && index < cartData.length)) {
+        return res.json({ success: false, message: "ไม่พบสินค้าที่ต้องการอัปเดต" });
+    }
+
+    if (action === 'increase') {
+        const item = cartData[index];
+        db.query("SELECT stock FROM books WHERE id = ?", [item.id], (err, results) => {
+            if (err) return res.json({ success: false, message: "เกิดข้อผิดพลาด" });
+            const stock = results.length > 0 ? results[0].stock : 0;
+            if (item.quantity >= stock) {
+                return res.json({ success: false, message: `สินค้านี้มีในสต็อกเพียง ${stock} เล่มเท่านั้น` });
             }
+            item.quantity += 1;
             res.cookie('cart', JSON.stringify(cartData), { httpOnly: true, maxAge: 3600000 });
             return res.json({ success: true });
+        });
+    } else if (action === 'decrease') {
+        if (cartData[index].quantity > 1) {
+            cartData[index].quantity -= 1;
+        } else {
+            cartData.splice(index, 1);
         }
-        return res.json({ success: false, message: "ไม่พบสินค้าที่ต้องการอัปเดต" });
-    } catch {
-        res.json({ success: false, message: "เกิดข้อผิดพลาดในการอัปเดตสินค้า" });
+        res.cookie('cart', JSON.stringify(cartData), { httpOnly: true, maxAge: 3600000 });
+        return res.json({ success: true });
+    } else {
+        return res.json({ success: false, message: "action ไม่ถูกต้อง" });
     }
 });
 
 
+app.get('/admin/orders', isAdmin, (req, res) => {
+    const sql = `
+        SELECT o.order_id, o.order_date, o.total_price, o.payment_status, o.payment_slip,
+               o.user_name, o.address, o.phone_number,
+               oi.book_id, b.title, oi.quantity, oi.price
+        FROM orders o
+        JOIN order_items oi ON o.order_id = oi.order_id
+        JOIN books b ON oi.book_id = b.id
+        ORDER BY o.order_date DESC
+    `;
+    db.query(sql, (err, results) => {
+        if (err) return res.status(500).send(err.message);
+
+        const ordersMap = {};
+        results.forEach(row => {
+            if (!ordersMap[row.order_id]) {
+                ordersMap[row.order_id] = {
+                    order_id: row.order_id,
+                    order_date: row.order_date,
+                    user_name: row.user_name,
+                    address: row.address,
+                    phone_number: row.phone_number,
+                    total_price: row.total_price,
+                    payment_status: row.payment_status,
+                    payment_slip: row.payment_slip,
+                    items: []
+                };
+            }
+            ordersMap[row.order_id].items.push({
+                title: row.title,
+                quantity: row.quantity,
+                price: row.price
+            });
+        });
+
+        res.render('admin-orders', { orders: Object.values(ordersMap) });
+    });
+});
+
+app.post('/admin/orders/:id/status', isAdmin, (req, res) => {
+    const { status } = req.body;
+    const allowed = ['Pending', 'Completed', 'Cancelled'];
+    if (!allowed.includes(status)) {
+        return res.status(400).json({ success: false, message: 'สถานะไม่ถูกต้อง' });
+    }
+
+    if (status !== 'Cancelled') {
+        db.query(
+            "UPDATE orders SET payment_status = ? WHERE order_id = ?",
+            [status, req.params.id],
+            (err) => {
+                if (err) return res.status(500).json({ success: false, error: err.message });
+                res.json({ success: true });
+            }
+        );
+        return;
+    }
+
+    // Cancelled: คืน stock เฉพาะ order ที่ยังเป็น Pending (ยังไม่ส่งของ)
+    db.query(
+        `SELECT oi.book_id, oi.quantity FROM order_items oi
+         JOIN orders o ON oi.order_id = o.order_id
+         WHERE oi.order_id = ? AND o.payment_status = 'Pending'`,
+        [req.params.id],
+        (err, items) => {
+            if (err) return res.status(500).json({ success: false, error: err.message });
+
+            db.query(
+                "UPDATE orders SET payment_status = 'Cancelled' WHERE order_id = ?",
+                [req.params.id],
+                (err) => {
+                    if (err) return res.status(500).json({ success: false, error: err.message });
+
+                    if (items.length === 0) return res.json({ success: true });
+
+                    let remaining = items.length;
+                    items.forEach(item => {
+                        db.query(
+                            "UPDATE books SET stock = stock + ? WHERE id = ?",
+                            [item.quantity, item.book_id],
+                            () => { if (--remaining === 0) res.json({ success: true }); }
+                        );
+                    });
+                }
+            );
+        }
+    );
+});
+
+
 app.get("/reviews/:book_id", (req, res) => {
-    db.query("SELECT user, rating, comment FROM reviews WHERE book_id = ?", [req.params.book_id], (err, results) => {
+    db.query("SELECT id, user, rating, comment FROM reviews WHERE book_id = ? ORDER BY id DESC", [req.params.book_id], (err, results) => {
         if (err) return res.status(500).json({ error: "เกิดข้อผิดพลาดในการโหลดรีวิว" });
         res.json(results);
+    });
+});
+
+app.delete("/reviews/:id", isLoggedIn, (req, res) => {
+    const reviewId = req.params.id;
+    db.query("SELECT user FROM reviews WHERE id = ?", [reviewId], (err, rows) => {
+        if (err || rows.length === 0) return res.status(404).json({ success: false });
+        if (req.session.user_role !== 'admin' && rows[0].user !== req.session.user_name) {
+            return res.status(403).json({ success: false, error: 'ไม่มีสิทธิ์ลบรีวิวนี้' });
+        }
+        db.query("DELETE FROM reviews WHERE id = ?", [reviewId], (err) => {
+            if (err) return res.status(500).json({ success: false });
+            res.json({ success: true });
+        });
     });
 });
 
@@ -533,15 +731,108 @@ app.post("/reviews", isLoggedIn, (req, res) => {
     }
 
     db.query(
-        "INSERT INTO reviews (book_id, user, rating, comment) VALUES (?, ?, ?, ?)",
-        [book_id, user, rating, comment],
-        (err) => {
-            if (err) return res.status(500).json({ success: false, error: "เกิดข้อผิดพลาดในการเพิ่มรีวิว" });
-            res.json({ success: true, message: "เพิ่มรีวิวสำเร็จ!" });
+        "SELECT id FROM reviews WHERE book_id = ? AND user = ?",
+        [book_id, user],
+        (err, existing) => {
+            if (err) return res.status(500).json({ success: false, error: "เกิดข้อผิดพลาด" });
+            if (existing.length > 0) {
+                return res.json({ success: false, error: "คุณได้รีวิวหนังสือเล่มนี้ไปแล้ว" });
+            }
+            db.query(
+                "INSERT INTO reviews (book_id, user, rating, comment) VALUES (?, ?, ?, ?)",
+                [book_id, user, rating, comment],
+                (err) => {
+                    if (err) return res.status(500).json({ success: false, error: "เกิดข้อผิดพลาดในการเพิ่มรีวิว" });
+                    res.json({ success: true, message: "เพิ่มรีวิวสำเร็จ!" });
+                }
+            );
         }
     );
 });
 
+
+// ─── Profile ───────────────────────────────────────────────────────────────
+app.get('/profile', isLoggedIn, (req, res) => {
+    db.query(
+        "SELECT user_id, username, email FROM users WHERE user_id = ?",
+        [req.session.user_id],
+        (err, results) => {
+            if (err || results.length === 0) return res.redirect('/home');
+            res.render('profile', {
+                user: req.session.user_name,
+                profile: results[0],
+                success: req.flash('success')[0] || null,
+                error:   req.flash('error')[0]   || null
+            });
+        }
+    );
+});
+
+app.post('/profile/username', isLoggedIn, (req, res) => {
+    const newName = (req.body.username || '').trim();
+    if (newName.length < 3) {
+        req.flash('error', 'ชื่อผู้ใช้ต้องมีอย่างน้อย 3 ตัวอักษร');
+        return res.redirect('/profile');
+    }
+    db.query(
+        "SELECT user_id FROM users WHERE username = ? AND user_id != ?",
+        [newName, req.session.user_id],
+        (err, rows) => {
+            if (err) return res.status(500).json({ error: err.message });
+            if (rows.length > 0) {
+                req.flash('error', 'ชื่อผู้ใช้นี้ถูกใช้งานแล้ว');
+                return res.redirect('/profile');
+            }
+            db.query(
+                "UPDATE users SET username = ? WHERE user_id = ?",
+                [newName, req.session.user_id],
+                (err) => {
+                    if (err) return res.status(500).json({ error: err.message });
+                    req.session.user_name = newName;
+                    req.flash('success', 'เปลี่ยนชื่อผู้ใช้สำเร็จ!');
+                    res.redirect('/profile');
+                }
+            );
+        }
+    );
+});
+
+app.post('/profile/password', isLoggedIn, (req, res) => {
+    const { current_password, new_password, confirm_password } = req.body;
+    if (new_password !== confirm_password) {
+        req.flash('error', 'รหัสผ่านใหม่ไม่ตรงกัน');
+        return res.redirect('/profile');
+    }
+    if (!new_password || new_password.length < 6) {
+        req.flash('error', 'รหัสผ่านใหม่ต้องมีอย่างน้อย 6 ตัวอักษร');
+        return res.redirect('/profile');
+    }
+    db.query(
+        "SELECT password FROM users WHERE user_id = ?",
+        [req.session.user_id],
+        (err, results) => {
+            if (err || results.length === 0) return res.redirect('/profile');
+            bcrypt.compare(current_password, results[0].password, (err, isMatch) => {
+                if (err || !isMatch) {
+                    req.flash('error', 'รหัสผ่านปัจจุบันไม่ถูกต้อง');
+                    return res.redirect('/profile');
+                }
+                bcrypt.hash(new_password, 10, (err, hashed) => {
+                    if (err) return res.status(500).json({ error: err.message });
+                    db.query(
+                        "UPDATE users SET password = ? WHERE user_id = ?",
+                        [hashed, req.session.user_id],
+                        (err) => {
+                            if (err) return res.status(500).json({ error: err.message });
+                            req.flash('success', 'เปลี่ยนรหัสผ่านสำเร็จ!');
+                            res.redirect('/profile');
+                        }
+                    );
+                });
+            });
+        }
+    );
+});
 
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);

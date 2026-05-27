@@ -1,79 +1,320 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>แก้ไขหนังสือ</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <style>
-        body {
-            background: linear-gradient(135deg, #74ebd5, #acb6e5);
-            font-family: 'Arial', sans-serif;
-        }
-        .edit-card {
-            max-width: 500px;
-            width: 100%;
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s ease-in-out;
-        }
-        .edit-card:hover {
-            transform: translateY(-5px);
-        }
-        .form-label {
-            font-weight: bold;
-            color: #333;
-        }
-        .btn-primary {
-            background: linear-gradient(135deg, #3498db, #6ab0de);
-            border: none;
-            transition: all 0.3s;
-        }
-        .btn-primary:hover {
-            background: linear-gradient(135deg, #2980b9, #5fa3d1);
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>แก้ไขหนังสือ | NUI MANGA STORE</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <script src="/javascript/darkmode.js"></script>
+  <style>
+    body {
+      background: linear-gradient(135deg, #74ebd5, #acb6e5);
+      font-family: 'Arial', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 16px;
+    }
+    .form-container {
+      background: #fff;
+      border-radius: 16px;
+      padding: 32px;
+      max-width: 520px;
+      width: 100%;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+    }
+    .form-container h2 { font-weight: 800; margin-bottom: 24px; }
+    .form-label { font-weight: 600; font-size: 14px; margin-bottom: 6px; }
+
+    /* ── Current image ── */
+    .current-img-wrap {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: #f8fafc;
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+    .current-img-wrap img {
+      width: 64px; height: 64px;
+      object-fit: contain; border-radius: 8px;
+      border: 1px solid #e2e8f0;
+    }
+    .current-img-label { font-size: 13px; color: #64748b; }
+    .current-img-label strong { display: block; color: #1a1d23; font-size: 14px; }
+
+    /* ── Image mode tabs ── */
+    .img-mode-tabs {
+      display: flex; gap: 0;
+      background: #f1f5f9; border-radius: 10px;
+      padding: 4px; margin-bottom: 12px;
+    }
+    .img-mode-btn {
+      flex: 1; padding: 8px; border: none; background: transparent;
+      border-radius: 7px; font-size: 13px; font-weight: 600;
+      cursor: pointer; color: #64748b; transition: all 0.18s;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+    .img-mode-btn.active { background: #fff; color: #1a1d23; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
+
+    /* ── Upload zone ── */
+    .upload-zone {
+      border: 2px dashed #cbd5e1;
+      border-radius: 12px;
+      padding: 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      background: #f8fafc;
+      position: relative;
+    }
+    .upload-zone:hover, .upload-zone.drag-over {
+      border-color: #3b82f6; background: #eff6ff;
+    }
+    .upload-zone input[type="file"] {
+      position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+    }
+    .upload-zone i { font-size: 32px; color: #94a3b8; display: block; margin-bottom: 8px; }
+    .upload-zone .upload-text  { font-size: 14px; color: #64748b; }
+    .upload-zone .upload-hint  { font-size: 12px; color: #94a3b8; margin-top: 4px; }
+
+    /* ── Preview ── */
+    .img-preview-wrap { display: none; margin-top: 12px; position: relative; width: fit-content; }
+    .img-preview-wrap.show { display: block; }
+    .img-preview-wrap img {
+      max-height: 160px; max-width: 100%;
+      border-radius: 10px; border: 1px solid #e2e8f0; object-fit: contain;
+    }
+    .img-clear-btn {
+      position: absolute; top: -8px; right: -8px;
+      width: 24px; height: 24px; border-radius: 50%;
+      background: #ef4444; color: #fff; border: none;
+      font-size: 12px; cursor: pointer; line-height: 1;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .btn-submit {
+      width: 100%; padding: 12px; font-size: 16px;
+      font-weight: 700; border-radius: 10px;
+      background: linear-gradient(135deg, #3b82f6, #6ab0de);
+      border: none; color: #fff; transition: opacity 0.2s;
+    }
+    .btn-submit:hover { opacity: 0.88; }
+    .btn-back {
+      display: inline-flex; align-items: center; gap: 6px;
+      color: #64748b; text-decoration: none; font-size: 14px;
+      font-weight: 600; margin-bottom: 20px;
+    }
+    .btn-back:hover { color: #1a1d23; }
+    .keep-badge {
+      display: inline-block; background: #dcfce7; color: #166534;
+      font-size: 12px; font-weight: 600; padding: 3px 10px;
+      border-radius: 20px; margin-top: 6px;
+    }
+
+    /* ════ DARK MODE ════ */
+    [data-theme="dark"] body { background: #0f1117; }
+    [data-theme="dark"] .form-container { background: #1c1f2e; color: #dde1ec; }
+    [data-theme="dark"] .form-label { color: #dde1ec; }
+    [data-theme="dark"] .form-control, [data-theme="dark"] .form-select {
+      background: #252836; border-color: #2d3348; color: #dde1ec;
+    }
+    [data-theme="dark"] .form-control::placeholder { color: #8b95a8; }
+    [data-theme="dark"] .current-img-wrap { background: #252836; }
+    [data-theme="dark"] .current-img-label { color: #8b95a8; }
+    [data-theme="dark"] .current-img-label strong { color: #dde1ec; }
+    [data-theme="dark"] .img-mode-tabs { background: #252836; }
+    [data-theme="dark"] .img-mode-btn { color: #8b95a8; }
+    [data-theme="dark"] .img-mode-btn.active { background: #1c1f2e; color: #dde1ec; }
+    [data-theme="dark"] .upload-zone { background: #252836; border-color: #2d3348; }
+    [data-theme="dark"] .upload-zone:hover, [data-theme="dark"] .upload-zone.drag-over { background: #1e2d48; border-color: #3b82f6; }
+    [data-theme="dark"] .upload-zone .upload-text, [data-theme="dark"] .upload-zone .upload-hint { color: #8b95a8; }
+    [data-theme="dark"] .btn-back { color: #8b95a8; }
+    [data-theme="dark"] .btn-back:hover { color: #dde1ec; }
+  </style>
 </head>
-<body class="d-flex justify-content-center align-items-center vh-100">
+<body>
+  <button id="dark-mode-btn" onclick="toggleDarkMode()" title="Dark Mode" style="position:fixed;top:16px;right:16px;z-index:999;padding:8px 12px;border-radius:8px;border:1.5px solid rgba(255,255,255,0.3);background:rgba(0,0,0,0.15);color:#fff;cursor:pointer;backdrop-filter:blur(4px);font-size:16px;"><i class="bi bi-moon-fill"></i></button>
+  <div class="form-container">
+    <a href="/admin" class="btn-back"><i class="bi bi-arrow-left"></i> กลับหน้า Admin</a>
+    <h2 class="text-center text-primary">แก้ไขหนังสือ</h2>
 
-    <div class="edit-card">
-        <h2 class="text-center text-primary">✏️ แก้ไขหนังสือ</h2>
-        <form action="/admin/edit/<%= book.id %>" method="POST">
-            <div class="mb-3">
-                <label class="form-label">📖 ชื่อหนังสือ</label>
-                <input type="text" class="form-control" name="title" value="<%= book.title %>" required>
-            </div>
-            <div class="mb-3">
-                <label class="form-label">📚 หมวดหมู่</label>
-                <input type="text" class="form-control" name="genre" value="<%= book.genre %>" required>
-            </div>
-            <div class="mb-3">
-                <label class="form-label">💰 ราคา (บาท)</label>
-                <input type="number" class="form-control" name="price" value="<%= book.price %>" required>
-            </div>
-            <div class="mb-3">
-                <label class="form-label">🖼 URL รูปภาพ</label>
-                <input type="text" class="form-control" name="image" value="<%= book.image %>">
-            </div>
-            <div class="mb-3">
-                <label class="form-label">📦 จำนวนสต๊อค</label>
-                <input type="number" class="form-control" name="stock" value="<%= book.stock %>">
-            </div>
-            <div class="mb-3">
-                <label class="form-label">📝 คำอธิบาย</label>
-                <textarea class="form-control" name="description" rows="3"><%= book.description %></textarea>
-            </div>
-            <div class="d-grid">
-                <button type="submit" class="btn btn-primary">✅ บันทึก</button>
-            </div>
-        </form>
-    </div>
+    <form action="/admin/edit/<%= book.id %>" method="POST" enctype="multipart/form-data">
+      <input type="hidden" name="currentImage" value="<%= book.image %>">
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/javascript/toast.js"></script>
-    <script src="/javascript/transition.js"></script>
+      <div class="mb-3">
+        <label class="form-label">ชื่อหนังสือ</label>
+        <input type="text" class="form-control" name="title" value="<%= book.title %>" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">หมวดหมู่</label>
+        <input type="text" class="form-control" name="genre" value="<%= book.genre %>" required>
+      </div>
+      <div class="row g-3 mb-3">
+        <div class="col-6">
+          <label class="form-label">ราคา (บาท)</label>
+          <input type="number" class="form-control" name="price" value="<%= book.price %>" min="0" required>
+        </div>
+        <div class="col-6">
+          <label class="form-label">สต็อค (เล่ม)</label>
+          <input type="number" class="form-control" name="stock" value="<%= book.stock %>" min="0">
+        </div>
+      </div>
+
+      <!-- รูปภาพ -->
+      <div class="mb-3">
+        <label class="form-label">รูปภาพ</label>
+
+        <!-- รูปปัจจุบัน -->
+        <div class="current-img-wrap">
+          <img id="currentImgThumb"
+               src="<%= book.image || '/uploads/default.png' %>"
+               onerror="this.src='/uploads/default.png'"
+               alt="รูปปัจจุบัน">
+          <div class="current-img-label">
+            <strong>รูปปัจจุบัน</strong>
+            ถ้าไม่เลือกรูปใหม่ จะใช้รูปนี้ต่อไป
+            <span class="keep-badge"><i class="bi bi-check2 me-1"></i>คงไว้</span>
+          </div>
+        </div>
+
+        <div class="img-mode-tabs">
+          <button type="button" class="img-mode-btn active" id="btn-mode-upload" onclick="setMode('upload')">
+            <i class="bi bi-upload"></i> อัปโหลดไฟล์ใหม่
+          </button>
+          <button type="button" class="img-mode-btn" id="btn-mode-url" onclick="setMode('url')">
+            <i class="bi bi-link-45deg"></i> เปลี่ยน URL
+          </button>
+        </div>
+
+        <!-- Upload zone -->
+        <div id="zone-upload">
+          <div class="upload-zone" id="uploadZone">
+            <input type="file" name="imageFile" id="fileInput" accept="image/*" onchange="previewFile(this)">
+            <i class="bi bi-cloud-arrow-up"></i>
+            <div class="upload-text">คลิกหรือลากรูปมาวางที่นี่</div>
+            <div class="upload-hint">รองรับ JPG, PNG, GIF, WebP ขนาดไม่เกิน 5MB</div>
+          </div>
+          <div class="img-preview-wrap" id="previewWrap">
+            <img id="previewImg" src="" alt="preview">
+            <button type="button" class="img-clear-btn" onclick="clearFile()">
+              <i class="bi bi-x"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- URL input -->
+        <div id="zone-url" style="display:none;">
+          <input type="text" class="form-control" name="imageUrl" id="imageUrlInput"
+                 placeholder="https://example.com/image.jpg"
+                 oninput="previewUrl(this.value)">
+          <div class="img-preview-wrap mt-2" id="urlPreviewWrap">
+            <img id="urlPreviewImg" src="" alt="preview">
+            <button type="button" class="img-clear-btn" onclick="clearUrl()">
+              <i class="bi bi-x"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <label class="form-label">คำอธิบาย</label>
+        <textarea class="form-control" name="description" rows="3"><%= book.description %></textarea>
+      </div>
+
+      <button type="submit" class="btn-submit">
+        <i class="bi bi-check-lg me-2"></i>บันทึกการแก้ไข
+      </button>
+    </form>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function setMode(mode) {
+      document.getElementById('btn-mode-upload').classList.toggle('active', mode === 'upload');
+      document.getElementById('btn-mode-url').classList.toggle('active', mode === 'url');
+      document.getElementById('zone-upload').style.display = mode === 'upload' ? 'block' : 'none';
+      document.getElementById('zone-url').style.display    = mode === 'url'    ? 'block' : 'none';
+      if (mode === 'upload') clearUrl();
+      if (mode === 'url')    clearFile();
+    }
+
+    function previewFile(input) {
+      if (!input.files || !input.files[0]) return;
+      const url = URL.createObjectURL(input.files[0]);
+      document.getElementById('previewImg').src = url;
+      document.getElementById('previewWrap').classList.add('show');
+      document.getElementById('currentImgThumb').src = url;
+      document.querySelector('#uploadZone .upload-text').textContent = input.files[0].name;
+      document.querySelector('.keep-badge').innerHTML = '<i class="bi bi-arrow-repeat me-1"></i>จะเปลี่ยน';
+      document.querySelector('.keep-badge').style.background = '#fef9c3';
+      document.querySelector('.keep-badge').style.color = '#854d0e';
+    }
+
+    function clearFile() {
+      document.getElementById('fileInput').value = '';
+      document.getElementById('previewWrap').classList.remove('show');
+      document.getElementById('previewImg').src = '';
+      document.querySelector('#uploadZone .upload-text').textContent = 'คลิกหรือลากรูปมาวางที่นี่';
+      resetKeepBadge();
+    }
+
+    function previewUrl(val) {
+      const wrap = document.getElementById('urlPreviewWrap');
+      const img  = document.getElementById('urlPreviewImg');
+      if (val.trim()) {
+        img.src = val.trim();
+        img.onerror = () => { wrap.classList.remove('show'); resetKeepBadge(); };
+        img.onload  = () => {
+          wrap.classList.add('show');
+          document.getElementById('currentImgThumb').src = val.trim();
+          document.querySelector('.keep-badge').innerHTML = '<i class="bi bi-arrow-repeat me-1"></i>จะเปลี่ยน';
+          document.querySelector('.keep-badge').style.background = '#fef9c3';
+          document.querySelector('.keep-badge').style.color = '#854d0e';
+        };
+      } else {
+        wrap.classList.remove('show');
+        resetKeepBadge();
+      }
+    }
+
+    function clearUrl() {
+      const input = document.getElementById('imageUrlInput');
+      if (input) input.value = '';
+      document.getElementById('urlPreviewWrap').classList.remove('show');
+      resetKeepBadge();
+    }
+
+    function resetKeepBadge() {
+      const badge = document.querySelector('.keep-badge');
+      badge.innerHTML = '<i class="bi bi-check2 me-1"></i>คงไว้';
+      badge.style.background = '#dcfce7';
+      badge.style.color = '#166534';
+      const src = document.getElementById('currentImgThumb').dataset.original;
+      if (src) document.getElementById('currentImgThumb').src = src;
+    }
+
+    // เก็บ src เดิมของรูปปัจจุบันไว้
+    const thumb = document.getElementById('currentImgThumb');
+    thumb.dataset.original = thumb.src;
+
+    // Drag & drop
+    const zone = document.getElementById('uploadZone');
+    zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); });
+    zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+    zone.addEventListener('drop', e => {
+      e.preventDefault(); zone.classList.remove('drag-over');
+      const file = e.dataTransfer.files[0];
+      if (file && file.type.startsWith('image/')) {
+        const dt = new DataTransfer();
+        dt.items.add(file);
+        document.getElementById('fileInput').files = dt.files;
+        previewFile(document.getElementById('fileInput'));
+      }
+    });
+  </script>
 </body>
 </html>

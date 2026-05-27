@@ -30,8 +30,9 @@
   font-size: 12px;
   font-weight: 700;
 }
-.status-pending  { background: #fff3cd; color: #856404; }
+.status-pending   { background: #fff3cd; color: #856404; }
 .status-completed { background: #d1fae5; color: #065f46; }
+.status-cancelled { background: #fde8e8; color: #842029; }
 
 .order-card-body { padding: 20px; }
 
@@ -126,3 +127,16 @@
   .order-card-header { flex-direction: column; align-items: flex-start; }
   .order-meta { grid-template-columns: 1fr 1fr; }
 }
+
+/* ════ DARK MODE ════ */
+[data-theme="dark"] .order-card { background: var(--white); }
+[data-theme="dark"] .order-card-footer { background: #252836; border-top-color: var(--border); }
+[data-theme="dark"] .order-item { border-bottom-color: var(--border); }
+[data-theme="dark"] .order-meta { border-bottom-color: var(--border); }
+[data-theme="dark"] .btn-slip {
+  background: #252836; border-color: var(--border); color: var(--text);
+}
+[data-theme="dark"] .btn-slip:hover { background: var(--text); color: #1c1f2e; border-color: var(--text); }
+[data-theme="dark"] .status-pending   { background: #3a2e00; color: #fbbf24; }
+[data-theme="dark"] .status-completed { background: #063a24; color: #4ade80; }
+[data-theme="dark"] .status-cancelled { background: #3a0d0d; color: #f87171; }

@@ -8,6 +8,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
   <link rel="stylesheet" href="/css/shared.css">
   <link rel="stylesheet" href="/css/home.css">
+  <script src="/javascript/darkmode.js"></script>
 </head>
 <body>
 
@@ -25,8 +26,10 @@
           </div>
         </div>
         <div class="col-md-4 text-end d-flex align-items-center justify-content-end gap-2">
+          <button id="dark-mode-btn" class="btn btn-outline-light" onclick="toggleDarkMode()" title="Dark Mode" style="padding:6px 10px;"><i class="bi bi-moon-fill"></i></button>
           <a href="/cart" class="btn btn-outline-light"><i class="bi bi-cart3"></i> ตะกร้า</a>
           <% if (user) { %>
+            <a href="/profile" class="btn btn-outline-light" title="โปรไฟล์" style="padding:6px 10px;"><i class="bi bi-person-gear"></i></a>
             <a href="/logout" class="btn btn-outline-light"><i class="bi bi-box-arrow-right"></i> ออก</a>
           <% } else { %>
             <a href="/login" class="btn btn-outline-light"><i class="bi bi-person"></i> เข้าสู่ระบบ</a>
@@ -48,9 +51,9 @@
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">หมวดหมู่</a>
             <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="/Book?category=แอคชั่น"><i class="bi bi-lightning-charge me-2"></i>แอคชั่น</a></li>
-              <li><a class="dropdown-item" href="/Book?category=โรแมนซ์"><i class="bi bi-heart me-2"></i>โรแมนซ์</a></li>
-              <li><a class="dropdown-item" href="/Book?category=กีฬา"><i class="bi bi-trophy me-2"></i>กีฬา</a></li>
+              <% (genres || []).forEach(g => { %>
+              <li><a class="dropdown-item" href="/Book?category=<%= encodeURIComponent(g) %>"><%= g %></a></li>
+              <% }) %>
             </ul>
           </li>
           <li class="nav-item">
@@ -63,7 +66,7 @@
 
   <main class="products-section">
     <div class="container py-5">
-      <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
+      <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
         <h2 class="section-heading mb-0">
           <% if (searchQuery) { %>
             ผลค้นหา "<%= searchQuery %>"
@@ -75,16 +78,31 @@
         </h2>
         <% if (!searchQuery) { %>
         <div class="d-flex gap-2 flex-wrap">
-          <a href="/Book" class="btn btn-sm <%= !selectedCategory ? 'btn-warning fw-bold' : 'btn-outline-secondary' %>" style="border-radius:20px;">ทั้งหมด</a>
-          <a href="/Book?category=แอคชั่น" class="btn btn-sm <%= selectedCategory=='แอคชั่น' ? 'btn-warning fw-bold' : 'btn-outline-secondary' %>" style="border-radius:20px;">แอคชั่น</a>
-          <a href="/Book?category=โรแมนซ์" class="btn btn-sm <%= selectedCategory=='โรแมนซ์' ? 'btn-warning fw-bold' : 'btn-outline-secondary' %>" style="border-radius:20px;">โรแมนซ์</a>
-          <a href="/Book?category=กีฬา" class="btn btn-sm <%= selectedCategory=='กีฬา' ? 'btn-warning fw-bold' : 'btn-outline-secondary' %>" style="border-radius:20px;">กีฬา</a>
+          <a href="/Book<%= selectedSort ? '?sort='+selectedSort : '' %>" class="btn btn-sm <%= !selectedCategory ? 'btn-warning fw-bold' : 'btn-outline-secondary' %>" style="border-radius:20px;">ทั้งหมด</a>
+          <% (genres || []).forEach(g => { %>
+          <a href="/Book?category=<%= encodeURIComponent(g) %><%= selectedSort ? '&sort='+selectedSort : '' %>"
+             class="btn btn-sm <%= selectedCategory===g ? 'btn-warning fw-bold' : 'btn-outline-secondary' %>"
+             style="border-radius:20px;"><%= g %></a>
+          <% }) %>
         </div>
         <% } else { %>
         <a href="/Book" class="btn btn-sm btn-outline-secondary" style="border-radius:20px;">
           <i class="bi bi-x me-1"></i>ล้างการค้นหา
         </a>
         <% } %>
+      </div>
+
+      <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
+        <p class="text-muted mb-0" style="font-size:13px;"><i class="bi bi-book me-1"></i>พบ <%= total %> เล่ม</p>
+        <div class="d-flex align-items-center gap-2">
+          <label class="text-muted mb-0" style="font-size:13px;white-space:nowrap;"><i class="bi bi-sort-down me-1"></i>เรียงโดย</label>
+          <select class="form-select form-select-sm sort-select" style="width:auto;border-radius:20px;font-size:13px;"
+                  onchange="applySort(this.value)">
+            <option value=""           <%= !selectedSort              ? 'selected' : '' %>>ค่าเริ่มต้น (A-Z)</option>
+            <option value="price_asc"  <%= selectedSort==='price_asc'  ? 'selected' : '' %>>ราคา: ต่ำ → สูง</option>
+            <option value="price_desc" <%= selectedSort==='price_desc' ? 'selected' : '' %>>ราคา: สูง → ต่ำ</option>
+          </select>
+        </div>
       </div>
 
       <% if (books.length === 0) { %>
@@ -101,25 +119,60 @@
         <div class="row g-3">
           <% books.forEach(book => { %>
           <div class="col-6 col-md-4 col-lg-3">
-            <div class="manga-card">
+            <div class="manga-card <%= book.stock === 0 ? 'card-oos' : '' %>">
               <div class="card-img-wrap">
-                <% if (book.image && book.image.startsWith('http')) { %>
-                  <img src="<%= book.image %>" alt="<%= book.title %>" onerror="this.src='/uploads/default.png'">
-                <% } else { %>
-                  <img src="/uploads/<%= book.image %>" alt="<%= book.title %>" onerror="this.src='/uploads/default.png'">
+                <img src="<%= book.image %>" alt="<%= book.title %>" onerror="this.src='/uploads/default.png'">
+                <% if (book.stock === 0) { %>
+                  <div class="oos-overlay"><i class="bi bi-slash-circle me-1"></i>สินค้าหมด</div>
                 <% } %>
               </div>
               <div class="card-body">
                 <span class="genre-badge"><%= book.genre || 'มังงะ' %></span>
                 <div class="card-title"><%= book.title %></div>
                 <div class="card-price">฿<%= Number(book.price).toLocaleString() %></div>
-                <div class="card-stock"><i class="bi bi-box-seam me-1"></i>คงเหลือ <%= book.stock %> เล่ม</div>
-                <a href="/book-details/<%= book.id %>" class="btn-detail">ดูรายละเอียด</a>
+                <% if (book.stock === 0) { %>
+                  <div class="card-stock oos-text"><i class="bi bi-x-circle me-1"></i>สินค้าหมด</div>
+                <% } else { %>
+                  <div class="card-stock"><i class="bi bi-box-seam me-1"></i>คงเหลือ <%= book.stock %> เล่ม</div>
+                <% } %>
+                <a href="/book-details/<%= book.id %>" class="btn-detail <%= book.stock === 0 ? 'btn-detail-oos' : '' %>">ดูรายละเอียด</a>
               </div>
             </div>
           </div>
           <% }) %>
         </div>
+      <% } %>
+
+      <%
+        function buildPageUrl(p) {
+          let q = [];
+          if (searchQuery)      q.push('search='   + encodeURIComponent(searchQuery));
+          if (selectedCategory) q.push('category=' + encodeURIComponent(selectedCategory));
+          if (selectedSort)     q.push('sort='     + encodeURIComponent(selectedSort));
+          q.push('page=' + p);
+          return '/Book?' + q.join('&');
+        }
+      %>
+      <% if (totalPages > 1) { %>
+      <nav class="d-flex justify-content-center mt-4" aria-label="pagination">
+        <ul class="pagination">
+          <li class="page-item <%= currentPage === 1 ? 'disabled' : '' %>">
+            <a class="page-link" href="<%= buildPageUrl(currentPage - 1) %>">
+              <i class="bi bi-chevron-left"></i>
+            </a>
+          </li>
+          <% for (let i = 1; i <= totalPages; i++) { %>
+          <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+            <a class="page-link" href="<%= buildPageUrl(i) %>"><%= i %></a>
+          </li>
+          <% } %>
+          <li class="page-item <%= currentPage === totalPages ? 'disabled' : '' %>">
+            <a class="page-link" href="<%= buildPageUrl(currentPage + 1) %>">
+              <i class="bi bi-chevron-right"></i>
+            </a>
+          </li>
+        </ul>
+      </nav>
       <% } %>
     </div>
   </main>
@@ -155,5 +208,14 @@
   <script src="/javascript/transition.js"></script>
   <script src="/javascript/cart.js"></script>
   <script src="/javascript/search.js"></script>
+  <script>
+    function applySort(val) {
+      const url = new URL(window.location.href);
+      if (val) url.searchParams.set('sort', val);
+      else url.searchParams.delete('sort');
+      url.searchParams.delete('page');
+      window.location.href = url.toString();
+    }
+  </script>
 </body>
 </html>

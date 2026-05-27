@@ -2,58 +2,54 @@ function goToCheckout() {
     window.location.href = "/checkout";
 }
 
-// ✅ โหลดข้อมูลตะกร้าและอัปเดต UI
+// โหลดข้อมูลตะกร้าและอัปเดต UI ให้ตรงกับ cart.ejs
 async function loadCart() {
+    const cartList          = document.getElementById("cart-items-list");
+    const totalPriceElement = document.getElementById("total-price");
+    if (!cartList || !totalPriceElement) return;
+
     try {
-        console.log("🚀 กำลังโหลดตะกร้าสินค้า...");
-
         const response = await fetch('/cart/data');
-        if (!response.ok) throw new Error(`❌ HTTP Error: ${response.status}`);
-
+        if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
         const data = await response.json();
-        console.log("📦 ตะกร้าสินค้า:", data);
 
-        const cartList = document.getElementById("cart-items-list");
-        const totalPriceElement = document.getElementById("total-price");
-
-        if (!cartList || !totalPriceElement) {
-            console.error("❌ Error: ไม่พบ cart-items-list หรือ total-price ใน DOM");
+        if (data.cart.length === 0) {
+            location.reload();
             return;
         }
 
-        // ล้างตะกร้าก่อนโหลดข้อมูลใหม่
         cartList.innerHTML = "";
-        let total = 0;
-
-        if (data.cart.length === 0) {
-            cartList.innerHTML = "<li class='list-group-item text-center'>ไม่มีสินค้าในตะกร้า</li>";
-        }
-
         data.cart.forEach((item, index) => {
-            total += item.price * item.quantity;
-
             cartList.innerHTML += `
-                <li class="list-group-item d-flex align-items-center">
-                    <img src="${item.image}" 
-                         onerror="this.onerror=null; this.src='/uploads/default.png';" 
-                         style="width: 50px; height: 50px; margin-right: 10px;">
-                    <div>
-                        <h5>${item.title}</h5>
-                        <p>${item.price} บาท</p>
+                <div class="cart-item-card">
+                    <img class="item-img"
+                         src="${item.image || '/uploads/default.png'}"
+                         onerror="this.src='/uploads/default.png'"
+                         alt="${item.title}">
+                    <div class="item-info">
+                        <div class="item-title">${item.title}</div>
+                        <p class="item-price">฿${Number(item.price).toLocaleString()}</p>
                     </div>
-                    <div class="ms-auto">
-                        <button class="btn btn-secondary decrease-btn" onclick="updateCart(${index}, 'decrease')">➖</button>
-                        <span class="mx-2">${item.quantity}</span>
-                        <button class="btn btn-secondary increase-btn" onclick="updateCart(${index}, 'increase')">➕</button>
-                        <button class="btn btn-danger ms-2 remove-item" onclick="removeFromCart(${index})">❌</button>
+                    <div class="d-flex flex-column align-items-center gap-2">
+                        <div class="qty-control">
+                            <button class="qty-btn" onclick="updateCart(${index}, 'decrease')">−</button>
+                            <span class="qty-value">${item.quantity}</span>
+                            <button class="qty-btn" onclick="updateCart(${index}, 'increase')">+</button>
+                        </div>
+                        <button class="btn-remove" onclick="removeFromCart(${index})" title="ลบสินค้า">
+                            <i class="bi bi-trash3"></i>
+                        </button>
                     </div>
-                </li>`;
+                </div>`;
         });
 
-        totalPriceElement.innerText = `${total.toLocaleString()} บาท`;
+        totalPriceElement.textContent = `฿${Number(data.totalPrice).toLocaleString()}`;
+
+        const countEl = document.getElementById("cart-item-count");
+        if (countEl) countEl.textContent = `${data.cart.length} รายการ`;
 
     } catch (error) {
-        console.error("❌ Error loading cart:", error);
+        console.error("Error loading cart:", error);
     }
 }
 
@@ -71,7 +67,7 @@ async function addToCart(bookId, title, price, image) {
         const data = await response.json();
         if (data.success) {
             showToast("เพิ่มสินค้าลงตะกร้าแล้ว!", "success");
-            loadCart();
+            if (document.getElementById('cart-items-list')) loadCart();
         } else {
             showToast("เกิดข้อผิดพลาด: " + data.error, "error");
         }
