@@ -87,7 +87,7 @@ CREATE TABLE `orders` (
   `address` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `phone_number` varchar(15) NOT NULL,
   `total_price` decimal(10,2) NOT NULL,
-  `payment_status` enum('Pending','Completed') DEFAULT 'Pending',
+  `payment_status` enum('Pending','Completed','Cancelled') DEFAULT 'Pending',
   `payment_slip` varchar(255) DEFAULT NULL,
   `order_date` timestamp NOT NULL DEFAULT current_timestamp(),
   `user_id` int(11) DEFAULT NULL,

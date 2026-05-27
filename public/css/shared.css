@@ -33,8 +33,8 @@ body {
 }
 
 @keyframes pageFadeIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
 /* ─────────────── HEADER ─────────────── */
@@ -138,6 +138,38 @@ body {
   align-items: center;
   justify-content: center;
   padding: 8px;
+  position: relative;
+}
+
+/* ── Out of stock ── */
+.manga-card.card-oos { opacity: 0.72; }
+
+.oos-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.52);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  pointer-events: none;
+}
+
+.oos-text { color: var(--red) !important; font-weight: 700; }
+
+.btn-detail-oos {
+  background: #dee2e6 !important;
+  color: #6c757d !important;
+  cursor: default;
+  pointer-events: none;
+}
+
+[data-theme="dark"] .btn-detail-oos {
+  background: #2d3248 !important;
+  color: #6b7280 !important;
 }
 .manga-card .card-img-wrap img {
   width: 100%;
@@ -524,4 +556,99 @@ main { flex: 1; }
   .manga-card .card-img-wrap { height: 170px; }
   .manga-card .card-title { font-size: 13px; }
   .manga-card .card-price { font-size: 15px; }
+}
+
+/* ════════════════════════════════════════════
+   DARK MODE
+════════════════════════════════════════════ */
+[data-theme="dark"] {
+  --bg:        #0f1117;
+  --white:     #1c1f2e;
+  --text:      #dde1ec;
+  --muted:     #8b95a8;
+  --border:    #2d3348;
+  --shadow:    0 2px 12px rgba(0,0,0,0.4);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.55);
+}
+
+/* Dropdown */
+[data-theme="dark"] .dropdown-menu {
+  background: var(--white);
+  border: 1px solid var(--border);
+}
+[data-theme="dark"] .dropdown-item { color: var(--text); }
+[data-theme="dark"] .dropdown-item:hover { background: var(--yellow); color: #1a1d23; }
+
+/* Book card */
+[data-theme="dark"] .manga-card { background: var(--white); }
+[data-theme="dark"] .manga-card .card-img-wrap { background: #252836; }
+[data-theme="dark"] .manga-card .card-title { color: var(--text); }
+[data-theme="dark"] .genre-badge { background: #3a2e00; color: #ffc107; }
+
+/* Search bar input — header is always dark, use glass contrast */
+[data-theme="dark"] .search-bar .form-control {
+  background: rgba(255,255,255,0.12);
+  border-color: rgba(255,255,255,0.25);
+  color: #ffffff;
+}
+[data-theme="dark"] .search-bar .form-control::placeholder { color: rgba(255,255,255,0.5); }
+
+/* Live search dropdown */
+[data-theme="dark"] #live-search-dropdown { background: var(--white); }
+[data-theme="dark"] .sr-item { color: var(--text); border-bottom-color: var(--border); }
+[data-theme="dark"] .sr-item:hover,
+[data-theme="dark"] .sr-item.active { background: #252836; }
+[data-theme="dark"] .sr-footer {
+  background: #252836; color: var(--text); border-top-color: var(--border);
+}
+[data-theme="dark"] .sr-footer:hover { background: var(--yellow); color: #1a1d23; }
+[data-theme="dark"] .sr-title mark,
+[data-theme="dark"] .sr-genre mark { background: #4a3800; color: #ffd54f; }
+
+/* Toast */
+[data-theme="dark"] .toast-item { background: #1e2232; }
+[data-theme="dark"] .toast-success .toast-message { color: #4ade80; }
+[data-theme="dark"] .toast-error   .toast-message { color: #f87171; }
+[data-theme="dark"] .toast-warning .toast-message { color: #fbbf24; }
+[data-theme="dark"] .toast-info    .toast-message { color: #60a5fa; }
+
+/* Form inputs — text visible on dark background */
+[data-theme="dark"] .form-control,
+[data-theme="dark"] .form-select,
+[data-theme="dark"] textarea.form-control {
+  background-color: #252836 !important;
+  border-color: #3a3f55 !important;
+  color: #dde1ec !important;
+}
+[data-theme="dark"] .form-control::placeholder,
+[data-theme="dark"] textarea.form-control::placeholder {
+  color: #6b7280 !important;
+}
+[data-theme="dark"] .form-control:focus,
+[data-theme="dark"] .form-select:focus,
+[data-theme="dark"] textarea.form-control:focus {
+  background-color: #2d3248 !important;
+  border-color: #ffc107 !important;
+  color: #dde1ec !important;
+  box-shadow: 0 0 0 0.2rem rgba(255,193,7,0.15) !important;
+}
+[data-theme="dark"] .form-label { color: var(--text); }
+[data-theme="dark"] .input-group-text {
+  background-color: #2d3248;
+  border-color: #3a3f55;
+  color: #dde1ec;
+}
+
+/* Bootstrap btn-outline-secondary — override Bootstrap dark theme (low contrast grey on grey) */
+[data-theme="dark"] .btn.btn-outline-secondary {
+  color: #c4cad5;
+  border-color: #4d5468;
+  background-color: transparent;
+}
+[data-theme="dark"] .btn.btn-outline-secondary:hover,
+[data-theme="dark"] .btn.btn-outline-secondary:focus,
+[data-theme="dark"] .btn.btn-outline-secondary:active {
+  background-color: #4d5468;
+  border-color: #4d5468;
+  color: #dde1ec;
 }

@@ -73,3 +73,30 @@ th {
     background-color: #74c0fc; /* สีฟ้าเข้มกว่าหัวข้อ */
     color: white;
 }
+/* ── Admin stats cards ── */
+.stat-card-admin {
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  height: 100%;
+  transition: box-shadow 0.2s;
+}
+.stat-card-admin:hover { box-shadow: var(--shadow-lg); }
+.stat-icon-admin {
+  width: 40px; height: 40px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; margin-bottom: 4px;
+}
+.stat-label-admin { font-size: 12px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; }
+.stat-val-admin   { font-size: 22px; font-weight: 800; line-height: 1.1; }
+
+/* ════ DARK MODE ════ */
+[data-theme="dark"] body { background-color: #0f1117 !important; color: #dde1ec; }
+[data-theme="dark"] table { background-color: #1c2233 !important; color: #dde1ec; }
+[data-theme="dark"] th { background-color: #243050 !important; color: #fff; }
+[data-theme="dark"] td { border-color: #2d3348; }
+[data-theme="dark"] .table-container { background: #1c1f2e; }

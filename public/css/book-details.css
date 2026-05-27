@@ -138,6 +138,12 @@
   border-left: 3px solid var(--yellow);
 }
 .review-item .reviewer-name { font-weight: 700; font-size: 14px; color: var(--dark); }
+.btn-review-delete {
+  background: none; border: none; padding: 2px 6px;
+  color: var(--muted); font-size: 14px; cursor: pointer;
+  border-radius: 6px; line-height: 1; transition: color 0.15s, background 0.15s;
+}
+.btn-review-delete:hover { color: var(--red); background: #fde8e8; }
 .review-item .review-stars { color: #ffc107; font-size: 13px; margin: 2px 0 4px; }
 .review-item .review-comment { font-size: 14px; color: #555; }
 
@@ -167,3 +173,25 @@
   .btn-add-cart { width: 100%; justify-content: center; }
   .review-panel { padding: 16px; }
 }
+
+/* ════ DARK MODE ════ */
+[data-theme="dark"] .detail-panel,
+[data-theme="dark"] .review-panel { background: var(--white); }
+[data-theme="dark"] .book-title-lg,
+[data-theme="dark"] .review-panel h4 { color: var(--text); }
+[data-theme="dark"] .book-genre-badge { background: #3a2e00; color: #ffc107; }
+[data-theme="dark"] .book-desc { color: #aab0c2; }
+[data-theme="dark"] .reviewer-info { background: #252836; color: var(--muted); }
+[data-theme="dark"] .reviewer-info strong { color: var(--text); }
+[data-theme="dark"] .review-item { background: #252836; }
+[data-theme="dark"] .review-item .reviewer-name { color: var(--text); }
+[data-theme="dark"] .review-item .review-comment { color: #aab0c2; }
+[data-theme="dark"] .login-prompt {
+  background: #1e1800; border-color: #3a3000; color: #ffd54f;
+}
+[data-theme="dark"] .login-prompt a { color: #ffc107; }
+[data-theme="dark"] .review-panel .form-control,
+[data-theme="dark"] .review-panel .form-select {
+  background: #252836; border-color: var(--border); color: var(--text);
+}
+[data-theme="dark"] .review-panel .form-control::placeholder { color: var(--muted); }
