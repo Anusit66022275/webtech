@@ -1,4 +1,4 @@
-<!-- หน้าระบบจัดการแก้ไข ลบ เพิ่ม admin.ejs -->
+﻿<!-- หน้าระบบจัดการแก้ไข ลบ เพิ่ม admin.ejs -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -55,6 +55,9 @@
             </ul>
           </li>
           <li class="nav-item">
+            <a class="nav-link" href="/wishlist"><i class="bi bi-heart me-1"></i>รายการโปรด</a>
+          </li>
+          <li class="nav-item">
             <a class="nav-link" href="/order-history"><i class="bi bi-clock-history me-1"></i>ประวัติการซื้อ</a>
           </li>
           <li class="nav-item">
@@ -103,7 +106,28 @@
           </div>
         </div>
 
-        <a href="/admin/add" class="btn btn-success mb-3"><i class="bi bi-plus-lg me-1"></i>เพิ่มหนังสือ</a>
+        <!-- Charts -->
+        <div class="row g-3 mb-4">
+          <div class="col-md-7">
+            <div class="card shadow-sm">
+              <div class="card-header fw-bold"><i class="bi bi-bar-chart me-1"></i>ยอดขาย 30 วันล่าสุด</div>
+              <div class="card-body"><canvas id="revenueChart" height="120"></canvas></div>
+            </div>
+          </div>
+          <div class="col-md-5">
+            <div class="card shadow-sm">
+              <div class="card-header fw-bold"><i class="bi bi-trophy me-1"></i>หนังสือขายดี Top 5</div>
+              <div class="card-body"><canvas id="topBooksChart" height="160"></canvas></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex gap-2 mb-3 flex-wrap">
+          <a href="/admin/add" class="btn btn-success"><i class="bi bi-plus-lg me-1"></i>เพิ่มหนังสือ</a>
+          <a href="/admin/orders" class="btn btn-outline-primary"><i class="bi bi-bag me-1"></i>Orders</a>
+          <a href="/admin/users" class="btn btn-outline-secondary"><i class="bi bi-people me-1"></i>Users</a>
+          <a href="/admin/coupons" class="btn btn-outline-warning"><i class="bi bi-ticket me-1"></i>Coupons</a>
+        </div>
     
         <table class="table table-bordered mx-auto text-center">
             <thead class="table-dark">
@@ -167,9 +191,36 @@
     
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="/javascript/toast.js"></script>
 <script src="/javascript/transition.js"></script>
 <script src="/javascript/search.js"></script>
+<script>
+  Promise.all([
+    fetch('/admin/stats/revenue').then(r => r.json()),
+    fetch('/admin/stats/top-books').then(r => r.json())
+  ]).then(([revenue, topBooks]) => {
+    new Chart(document.getElementById('revenueChart'), {
+      type: 'bar',
+      data: {
+        labels: revenue.map(r => r.day),
+        datasets: [{ label: 'ยอดขาย (฿)', data: revenue.map(r => r.revenue),
+          backgroundColor: 'rgba(220,53,69,.7)', borderRadius: 4 }]
+      },
+      options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+    });
+
+    new Chart(document.getElementById('topBooksChart'), {
+      type: 'doughnut',
+      data: {
+        labels: topBooks.map(b => b.title.length > 20 ? b.title.substring(0,20)+'…' : b.title),
+        datasets: [{ data: topBooks.map(b => b.total_sold),
+          backgroundColor: ['#dc3545','#fd7e14','#ffc107','#198754','#0d6efd'] }]
+      },
+      options: { plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } } } }
+    });
+  });
+</script>
 
 <script>
     let deleteTargetId = null;

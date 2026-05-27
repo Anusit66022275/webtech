@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>จัดการโค้ดส่วนลด | Admin</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/shared.css">
+</head>
+<body>
+  <header class="header py-2">
+    <div class="container d-flex align-items-center justify-content-between">
+      <h1 style="font-size:1.4rem;">NUI MANGA STORE — Admin</h1>
+      <div class="d-flex gap-2">
+        <a href="/admin" class="btn btn-outline-light btn-sm"><i class="bi bi-grid me-1"></i>Dashboard</a>
+        <a href="/admin/orders" class="btn btn-outline-light btn-sm"><i class="bi bi-bag me-1"></i>Orders</a>
+        <a href="/admin/users" class="btn btn-outline-light btn-sm"><i class="bi bi-people me-1"></i>Users</a>
+        <a href="/logout" class="btn btn-outline-light btn-sm"><i class="bi bi-box-arrow-right"></i></a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container py-4">
+    <h2 class="mb-4"><i class="bi bi-ticket-perforated me-2"></i>จัดการโค้ดส่วนลด</h2>
+
+    <div class="card mb-4 shadow-sm">
+      <div class="card-header fw-bold">เพิ่มโค้ดใหม่</div>
+      <div class="card-body">
+        <form action="/admin/coupons/add" method="POST" class="row g-3">
+          <div class="col-md-2">
+            <label class="form-label">โค้ด</label>
+            <input type="text" name="code" class="form-control text-uppercase" placeholder="SAVE20" required>
+          </div>
+          <div class="col-md-2">
+            <label class="form-label">ส่วนลด (%)</label>
+            <input type="number" name="discount_percent" class="form-control" min="1" max="100" required>
+          </div>
+          <div class="col-md-2">
+            <label class="form-label">ซื้อขั้นต่ำ (฿)</label>
+            <input type="number" name="min_price" class="form-control" value="0" min="0">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">วันหมดอายุ</label>
+            <input type="date" name="expire_date" class="form-control">
+          </div>
+          <div class="col-md-2">
+            <label class="form-label">จำกัดการใช้</label>
+            <input type="number" name="usage_limit" class="form-control" value="100" min="1">
+          </div>
+          <div class="col-md-1 d-flex align-items-end">
+            <button type="submit" class="btn btn-danger w-100">เพิ่ม</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="card shadow-sm">
+      <div class="card-header fw-bold">โค้ดทั้งหมด (<%= coupons.length %>)</div>
+      <div class="card-body p-0">
+        <% if (coupons.length === 0) { %>
+        <div class="text-center py-4 text-muted">ยังไม่มีโค้ดส่วนลด</div>
+        <% } else { %>
+        <table class="table table-hover mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>โค้ด</th><th>ส่วนลด</th><th>ซื้อขั้นต่ำ</th><th>หมดอายุ</th><th>ใช้แล้ว/จำกัด</th><th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% coupons.forEach(c => { %>
+            <tr>
+              <td><span class="badge bg-warning text-dark fs-6"><%= c.code %></span></td>
+              <td><%= c.discount_percent %>%</td>
+              <td>฿<%= Number(c.min_price).toLocaleString() %></td>
+              <td><%= c.expire_date ? new Date(c.expire_date).toLocaleDateString('th-TH') : 'ไม่จำกัด' %></td>
+              <td><%= c.used_count %> / <%= c.usage_limit %></td>
+              <td>
+                <form action="/admin/coupons/delete/<%= c.id %>" method="POST" onsubmit="return confirm('ลบโค้ด <%= c.code %>?')">
+                  <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                </form>
+              </td>
+            </tr>
+            <% }) %>
+          </tbody>
+        </table>
+        <% } %>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

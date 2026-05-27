@@ -364,6 +364,10 @@
               <span class="status-badge status-<%= order.payment_status.toLowerCase() %>">
                 <% if (order.payment_status === 'Completed') { %>
                   <i class="bi bi-check-circle me-1"></i>ชำระแล้ว
+                <% } else if (order.payment_status === 'Shipped') { %>
+                  <i class="bi bi-truck me-1"></i>จัดส่งแล้ว
+                <% } else if (order.payment_status === 'Delivered') { %>
+                  <i class="bi bi-house-check me-1"></i>ส่งถึงแล้ว
                 <% } else { %>
                   <i class="bi bi-x-circle me-1"></i>ยกเลิก
                 <% } %>
@@ -406,7 +410,13 @@
                   <i class="bi bi-image"></i> ดูสลิป
                 </button>
                 <% } %>
+                <% if (order.payment_status === 'Completed') { %>
+                <button class="btn btn-outline-primary btn-sm" onclick="openConfirm(<%= order.order_id %>, 'Shipped')" style="font-family:'Sarabun',Arial,sans-serif;">
+                  <i class="bi bi-truck me-1"></i> จัดส่งสินค้า
+                </button>
+                <% } else { %>
                 <span class="done-label"><i class="bi bi-check2-all me-1"></i>ดำเนินการแล้ว</span>
+                <% } %>
               </div>
             </div>
           </div>
@@ -500,6 +510,13 @@
         desc.textContent  = `Order #${orderId} จะถูกย้ายไปแท็บ "ดำเนินการแล้ว"`;
         yesBtn.className  = 'btn-modal-confirm-yes';
         yesBtn.innerHTML  = '<i class="bi bi-check-lg me-1"></i>ยืนยัน';
+      } else if (status === 'Shipped') {
+        icon.className  = 'confirm-modal-icon success';
+        inner.className = 'bi bi-truck';
+        title.textContent = 'ยืนยันการจัดส่ง?';
+        desc.textContent  = `Order #${orderId} จะถูกอัปเดตเป็น "จัดส่งแล้ว"`;
+        yesBtn.className  = 'btn-modal-confirm-yes';
+        yesBtn.innerHTML  = '<i class="bi bi-truck me-1"></i>ยืนยันจัดส่ง';
       } else {
         icon.className  = 'confirm-modal-icon danger';
         inner.className = 'bi bi-x-circle-fill';
@@ -530,8 +547,10 @@
       const data = await res.json();
 
       if (data.success) {
-        const msg  = status === 'Completed' ? 'ยืนยันการชำระเงินสำเร็จ' : 'ยกเลิกคำสั่งซื้อสำเร็จ';
-        const type = status === 'Completed' ? 'success' : 'warning';
+        const msg  = status === 'Completed' ? 'ยืนยันการชำระเงินสำเร็จ'
+                   : status === 'Shipped'   ? 'อัปเดตสถานะจัดส่งแล้ว'
+                   : 'ยกเลิกคำสั่งซื้อสำเร็จ';
+        const type = status === 'Cancelled' ? 'warning' : 'success';
         showToast(msg, type);
         sessionStorage.setItem('adminOrderTab', 'pending');
         setTimeout(() => location.reload(), 1200);

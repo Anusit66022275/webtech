@@ -6,6 +6,11 @@ function showToast(message, type = 'success', duration = 3500) {
         document.body.appendChild(container);
     }
 
+    const navbar = document.querySelector('nav.navbar') || document.querySelector('.navbar');
+    if (navbar) {
+        container.style.top = (navbar.getBoundingClientRect().bottom + 8) + 'px';
+    }
+
     const icons = {
         success: 'bi-check-circle-fill',
         error:   'bi-x-circle-fill',

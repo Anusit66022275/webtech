@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="th">
 <head>
   <meta charset="UTF-8">
@@ -29,6 +29,12 @@
           <button id="dark-mode-btn" class="btn btn-outline-light" onclick="toggleDarkMode()" title="Dark Mode" style="padding:6px 10px;"><i class="bi bi-moon-fill"></i></button>
           <a href="/cart" class="btn btn-outline-light"><i class="bi bi-cart3"></i> ตะกร้า</a>
           <% if (user) { %>
+            <button class="btn btn-outline-light position-relative" id="notif-btn" style="padding:6px 10px;" title="การแจ้งเตือน">
+              <i class="bi bi-bell-fill"></i>
+              <% if (unreadNotifCount > 0) { %>
+              <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size:10px;"><%= unreadNotifCount %></span>
+              <% } %>
+            </button>
             <a href="/profile" class="btn btn-outline-light" title="โปรไฟล์" style="padding:6px 10px;"><i class="bi bi-person-gear"></i></a>
             <a href="/logout" class="btn btn-outline-light"><i class="bi bi-box-arrow-right"></i> ออก</a>
           <% } else { %>
@@ -57,6 +63,9 @@
             </ul>
           </li>
           <li class="nav-item">
+            <a class="nav-link" href="/wishlist"><i class="bi bi-heart me-1"></i>รายการโปรด</a>
+          </li>
+          <li class="nav-item">
             <a class="nav-link" href="/order-history">ประวัติการซื้อ</a>
           </li>
         </ul>
@@ -67,6 +76,13 @@
   <main>
     <div class="container py-5">
       <h2 class="section-heading mb-4"><i class="bi bi-credit-card me-2"></i>ชำระเงิน</h2>
+
+      <% if (error) { %>
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i><%= error %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+      <% } %>
 
       <div class="row g-4">
         <!-- Order summary -->
@@ -112,6 +128,17 @@
                        title="เบอร์โทร 9-10 หลัก ขึ้นต้นด้วย 0 เช่น 0812345678"
                        required>
                 <div class="form-text text-muted" style="font-size:12px;">ขึ้นต้นด้วย 0 มี 9-10 หลัก เช่น 0812345678</div>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">โค้ดส่วนลด (ถ้ามี)</label>
+                <div class="input-group">
+                  <input type="text" class="form-control" id="coupon-input" placeholder="กรอกโค้ดส่วนลด">
+                  <button class="btn btn-outline-secondary" type="button" id="btn-apply-coupon">ใช้โค้ด</button>
+                </div>
+                <div id="coupon-msg" class="form-text"></div>
+                <input type="hidden" name="coupon_code" id="coupon-code-hidden">
+                <input type="hidden" name="discount" id="discount-hidden" value="0">
               </div>
 
               <div class="qr-wrap">
@@ -165,5 +192,39 @@
   <script src="/javascript/toast.js"></script>
   <script src="/javascript/transition.js"></script>
   <script src="/javascript/search.js"></script>
+  <script>
+    const totalPrice = <%= totalPrice %>;
+    document.getElementById('btn-apply-coupon').addEventListener('click', function() {
+      const code = document.getElementById('coupon-input').value.trim();
+      if (!code) return;
+      fetch('/coupon/validate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code, total_price: totalPrice })
+      })
+      .then(r => r.json())
+      .then(data => {
+        const msg = document.getElementById('coupon-msg');
+        if (data.success) {
+          msg.style.color = 'green';
+          msg.textContent = `ลด ${data.discount_percent}% = -฿${data.discount.toLocaleString()}`;
+          document.getElementById('coupon-code-hidden').value = code;
+          document.getElementById('discount-hidden').value = data.discount;
+        } else {
+          msg.style.color = 'red';
+          msg.textContent = data.message;
+          document.getElementById('coupon-code-hidden').value = '';
+          document.getElementById('discount-hidden').value = 0;
+        }
+      });
+    });
+  </script>
+
+  <!-- Notification dropdown -->
+  <div id="notif-dropdown" style="display:none;position:fixed;width:320px;max-height:400px;overflow-y:auto;background:#fff;border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,.2);z-index:1020;">
+    <div style="padding:12px 16px;border-bottom:1px solid #eee;font-weight:600;">การแจ้งเตือน</div>
+    <div id="notif-list" style="padding:8px 0;"></div>
+  </div>
+  <script src="/javascript/notifications.js"></script>
 </body>
 </html>

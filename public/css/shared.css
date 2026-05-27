@@ -447,7 +447,7 @@ main { flex: 1; }
 /* ─────────────── TOAST NOTIFICATION ─────────────── */
 #toast-container {
   position: fixed;
-  top: 20px;
+  top: 80px;
   right: 20px;
   z-index: 99999;
   display: flex;
@@ -548,7 +548,24 @@ main { flex: 1; }
   }
   .header h1 { font-size: 16px !important; }
   .manga-card .card-img-wrap { height: 200px; padding: 6px; }
-  .btn-outline-light { font-size: 11px; padding: 5px 8px; }
+
+  /* ปุ่มทุกปุ่มใน header — icon-only ขนาดเท่ากัน */
+  .header .row > div:nth-child(3) .btn-outline-light {
+    width: 34px;
+    height: 34px;
+    padding: 0 !important;
+    font-size: 0 !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .header .row > div:nth-child(3) .btn-outline-light i {
+    font-size: 15px !important;
+  }
+  .header .row > div:nth-child(3) .d-flex {
+    gap: 4px !important;
+  }
 }
 
 @media (max-width: 480px) {

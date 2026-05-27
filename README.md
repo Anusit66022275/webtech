@@ -62,6 +62,31 @@ admin123
 นาย อนุสิษฐ์ ง้วนกันทะ 66022275
 
 
+โครงสร้าง
+
+webtech/
+├── server.js          (50 บรรทัด — setup + mount เท่านั้น)
+├── db.js              (database pool)
+├── middleware/
+│   ├── auth.js        (isAdmin, isLoggedIn, loginLimiter)
+│   ├── upload.js      (multer config)
+│   └── globals.js     (res.locals: user, genres, unreadNotifCount)
+├── helpers/
+│   └── cart.js        (getCartDB, parseCookieCart)
+└── routes/
+    ├── auth.js        (login, logout, register)
+    ├── books.js       (home, search, /Book, book-details)
+    ├── cart.js        (cart CRUD)
+    ├── checkout.js    (checkout)
+    ├── orders.js      (order-history)
+    ├── wishlist.js    (wishlist)
+    ├── reviews.js     (reviews)
+    ├── notifications.js
+    ├── profile.js
+    ├── coupons.js
+    └── admin.js       (admin ทั้งหมด)
+
+
 
 
 

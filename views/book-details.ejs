@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="th">
 <head>
   <meta charset="UTF-8">
@@ -29,7 +29,12 @@
           <button id="dark-mode-btn" class="btn btn-outline-light" onclick="toggleDarkMode()" title="Dark Mode" style="padding:6px 10px;"><i class="bi bi-moon-fill"></i></button>
           <a href="/cart" class="btn btn-outline-light"><i class="bi bi-cart3"></i> ตะกร้า</a>
           <% if (user) { %>
-            <a href="/profile" class="btn btn-outline-light" title="โปรไฟล์" style="padding:6px 10px;"><i class="bi bi-person-gear"></i></a>
+                        <button class="btn btn-outline-light position-relative" id="notif-btn" style="padding:6px 10px;" title="การแจ้งเตือน">
+              <i class="bi bi-bell-fill"></i>
+              <% if (unreadNotifCount > 0) { %>
+              <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size:10px;"><%= unreadNotifCount %></span>
+              <% } %>
+            </button>            <a href="/profile" class="btn btn-outline-light" title="โปรไฟล์" style="padding:6px 10px;"><i class="bi bi-person-gear"></i></a>
             <a href="/logout" class="btn btn-outline-light"><i class="bi bi-box-arrow-right"></i> ออก</a>
           <% } else { %>
             <a href="/login" class="btn btn-outline-light"><i class="bi bi-person"></i> เข้าสู่ระบบ</a>
@@ -55,6 +60,9 @@
               <li><a class="dropdown-item" href="/Book?category=<%= encodeURIComponent(g) %>"><%= g %></a></li>
               <% }) %>
             </ul>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/wishlist"><i class="bi bi-heart me-1"></i>รายการโปรด</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="/order-history">ประวัติการซื้อ</a>
@@ -101,6 +109,13 @@
                 data-image="<%= book.image %>">
                 <i class="bi bi-cart-plus"></i> เพิ่มลงตะกร้า
               </button>
+            <% } %>
+            <% if (user) { %>
+            <button class="btn-add-cart mt-2" id="btn-wishlist" data-id="<%= book.id %>"
+              style="background:<%= wishlisted ? '#dc3545' : 'transparent' %>;color:<%= wishlisted ? '#fff' : '#dc3545' %>;border:2px solid #dc3545;">
+              <i class="bi bi-heart<%= wishlisted ? '-fill' : '' %> me-1"></i>
+              <span><%= wishlisted ? 'บันทึกแล้ว' : 'บันทึกในรายการโปรด' %></span>
+            </button>
             <% } %>
           </div>
         </div>
@@ -195,6 +210,34 @@
       });
     }
 
+    const wishlistBtn = document.getElementById('btn-wishlist');
+    if (wishlistBtn) {
+      wishlistBtn.addEventListener('click', function() {
+        const bookId = this.dataset.id;
+        fetch('/wishlist/toggle', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ book_id: bookId })
+        })
+        .then(r => r.json())
+        .then(data => {
+          if (data.success) {
+            const icon = this.querySelector('i');
+            const span = this.querySelector('span');
+            if (data.wishlisted) {
+              icon.className = 'bi bi-heart-fill me-1';
+              span.textContent = 'บันทึกแล้ว';
+              showToast('เพิ่มในรายการโปรดแล้ว', 'success');
+            } else {
+              icon.className = 'bi bi-heart me-1';
+              span.textContent = 'บันทึกในรายการโปรด';
+              showToast('ลบออกจากรายการโปรดแล้ว', 'warning');
+            }
+          }
+        });
+      });
+    }
+
     function escapeHtml(str) {
       return String(str)
         .replace(/&/g, '&amp;')
@@ -275,5 +318,12 @@
     document.addEventListener("DOMContentLoaded", loadReviews);
   </script>
 
+
+  <!-- Notification dropdown -->
+  <div id="notif-dropdown" style="display:none;position:fixed;width:320px;max-height:400px;overflow-y:auto;background:#fff;border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,.2);z-index:1020;">
+    <div style="padding:12px 16px;border-bottom:1px solid #eee;font-weight:600;">การแจ้งเตือน</div>
+    <div id="notif-list" style="padding:8px 0;"></div>
+  </div>
+  <script src="/javascript/notifications.js"></script>
 </body>
 </html>
